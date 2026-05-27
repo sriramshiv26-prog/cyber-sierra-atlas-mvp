@@ -1,0 +1,131 @@
+/* ============================================================
+   Cyber Sierra — Brand Design Tokens v1.0
+   Source: PPTX V.3 template + cybersierra.co
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  /* ---------- Brand Core ---------- */
+  --cs-navy-900: #0B1C36;   /* extra-dark, rarely used */
+  --cs-navy-800: #102C4F;
+  --cs-navy-700: #183B65;   /* ★ PRIMARY brand color */
+  --cs-navy-600: #2E5589;
+  --cs-navy-500: #4C76A8;
+
+  --cs-cyan-500: #1FB6E0;
+  --cs-cyan-400: #2DD6FF;   /* ★ ACCENT brand color */
+  --cs-cyan-300: #6FE3FF;
+  --cs-cyan-200: #B8F1FF;
+  --cs-cyan-100: #EAFEFF;
+
+  --cs-blue-400: #5A95DA;
+  --cs-blue-300: #8CBDED;
+  --cs-blue-200: #B8D4F2;
+  --cs-blue-100: #E3EDFB;
+
+  /* ---------- Neutrals (slate ramp) ---------- */
+  --cs-slate-900: #0F172A;  /* body text on light bg */
+  --cs-slate-800: #1E293B;
+  --cs-slate-700: #334155;  /* headings on light */
+  --cs-slate-600: #475569;  /* extracted from deck */
+  --cs-slate-500: #64748B;  /* secondary text */
+  --cs-slate-400: #94A3B8;  /* extracted, dividers */
+  --cs-slate-300: #CBD5E1;  /* extracted, borders */
+  --cs-slate-200: #E2E8F0;
+  --cs-slate-100: #F1F5F9;  /* surface tint */
+  --cs-slate-50:  #F8FAFC;
+  --cs-white:     #FFFFFF;
+  --cs-black:     #000000;
+
+  /* ---------- Semantic ---------- */
+  --cs-success: #1FB6E0;   /* uses cyan family per brand */
+  --cs-warning: #F59E0B;
+  --cs-danger:  #FF8C70;   /* extracted coral from x-icon */
+  --cs-info:    #2DD6FF;
+
+  /* ---------- Gradients ---------- */
+  --cs-gradient-cyan: linear-gradient(135deg, #2DD6FF 0%, #1FB6E0 100%);
+  --cs-gradient-navy: linear-gradient(180deg, #183B65 0%, #0B1C36 100%);
+  --cs-gradient-icon: linear-gradient(135deg, #2DD6FF 0%, #1AB89C 100%);
+  --cs-gradient-surface: linear-gradient(180deg, #FFFFFF 0%, #EAFEFF 100%);
+
+  /* ---------- Typography ---------- */
+  --cs-font-display: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --cs-font-body:    'Inter', 'Helvetica Neue', Arial, sans-serif;
+  --cs-font-mono:    'JetBrains Mono', 'Menlo', Consolas, monospace;
+  --cs-font-print:   'Arial', 'Helvetica', sans-serif; /* PPTX safe */
+
+  /* Slide type scale (1920×1080) */
+  --type-display:   96px;
+  --type-title:     64px;
+  --type-subtitle:  44px;
+  --type-section:   36px;
+  --type-body:      28px;
+  --type-small:     22px;
+  --type-tag:       18px;
+
+  /* Document type scale (8.5 × 11 print / web) */
+  --doc-display:    56px;
+  --doc-h1:         40px;
+  --doc-h2:         28px;
+  --doc-h3:         20px;
+  --doc-body:       16px;
+  --doc-small:      13px;
+
+  /* ---------- Spacing ---------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --sp-9: 96px;
+  --sp-10: 128px;
+
+  /* Slide padding (1920×1080 safe area) */
+  --pad-x:        100px;
+  --pad-top:      96px;
+  --pad-bottom:   80px;
+  --gap-title:    48px;
+  --gap-item:     24px;
+
+  /* ---------- Radii ---------- */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  16px;
+  --r-xl:  24px;
+  --r-pill: 999px;
+
+  /* ---------- Shadows ---------- */
+  --sh-xs: 0 1px 2px rgba(15, 23, 42, 0.06);
+  --sh-sm: 0 2px 6px rgba(15, 23, 42, 0.08);
+  --sh-md: 0 8px 24px rgba(15, 23, 42, 0.10);
+  --sh-lg: 0 24px 64px rgba(15, 23, 42, 0.14);
+  --sh-glow: 0 0 0 4px rgba(45, 214, 255, 0.18);
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 160ms;
+  --dur-med:  280ms;
+  --dur-slow: 480ms;
+}
+
+/* ---------- Utility classes for cross-document reuse ---------- */
+.cs-mono { font-family: var(--cs-font-mono); }
+.cs-bg-navy { background: var(--cs-navy-700); color: var(--cs-white); }
+.cs-bg-light { background: var(--cs-white); color: var(--cs-slate-900); }
+.cs-text-navy { color: var(--cs-navy-700); }
+.cs-text-cyan { color: var(--cs-cyan-400); }
+.cs-text-slate { color: var(--cs-slate-600); }
+
+.cs-rule-cyan {
+  display: inline-block;
+  width: 48px;
+  height: 3px;
+  background: var(--cs-cyan-400);
+  border-radius: 999px;
+}
