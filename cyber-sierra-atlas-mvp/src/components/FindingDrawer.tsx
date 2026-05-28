@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Save, Trash2, AlertCircle, CheckCircle2, Globe, User, Calendar, Wand2, Copy, Download, Loader2, Paperclip, Trash } from 'lucide-react';
+import { X, Save, Trash2, AlertCircle, CheckCircle2, Globe, User, Calendar, Wand2, Copy, Download, Loader2, Paperclip, Trash, Wrench, Edit2, Check, CheckCircle } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
 import { validateFinding } from '../lib/validation';
 import { generateRemediationPlan } from '../lib/llm';
@@ -21,6 +21,8 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isEditingRemediation, setIsEditingRemediation] = useState(false);
+  const [remediationEditValue, setRemediationEditValue] = useState('');
 
   useEffect(() => {
     if (finding) {
@@ -358,29 +360,85 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
 
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
-              <Wand2 size={14} /> Remediation Notes
+              <Wrench size={14} /> Remediation Plan
             </div>
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Remediation Plan</label>
-              <textarea
-                rows={4}
-                value={formState.remediation_notes || ''}
-                onChange={(e) => handleInputChange('remediation_notes', e.target.value)}
-                placeholder="Enter remediation steps, action items, or suggested fixes. You can edit the AI-generated plan here."
-                className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20 text-sm font-mono text-[11px]"
-              />
-              <div className="flex items-center justify-between">
-                <p className="text-[10px] text-slate-400 dark:text-slate-500">Edit or add remediation details. Use "Generate Plan" to get AI suggestions.</p>
-                <button
-                  onClick={handleGenerateRemediationPlan}
-                  disabled={isGenerating}
-                  className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-cs-navy dark:text-cs-cyan-400 hover:bg-cs-light dark:hover:bg-slate-700 rounded transition-colors disabled:opacity-50 shrink-0"
-                >
-                  {isGenerating ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
-                  {isGenerating ? 'Generating...' : 'Generate'}
-                </button>
+
+            {/* AI Suggestion Display */}
+            {formState.remediation_suggested && !isEditingRemediation && (
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="text-xs font-bold text-blue-700 dark:text-blue-300 mb-2 uppercase">
+                  AI Suggestion (Claude)
+                </div>
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                  {formState.remediation_suggested}
+                </p>
               </div>
-            </div>
+            )}
+
+            {/* Confirmed Remediation Display */}
+            {formState.remediation_confirmed && !isEditingRemediation && (
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle size={14} className="text-green-700 dark:text-green-300" />
+                  <div className="text-xs font-bold text-green-700 dark:text-green-300 uppercase">
+                    Confirmed Plan
+                  </div>
+                </div>
+                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                  {formState.remediation_confirmed}
+                </p>
+                {formState.remediation_last_modified_by && (
+                  <div className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                    Last modified by {formState.remediation_last_modified_by} at{' '}
+                    {new Date(formState.remediation_last_modified_at || '').toLocaleString()}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Edit Mode */}
+            {isEditingRemediation ? (
+              <div className="space-y-3">
+                <textarea
+                  rows={6}
+                  value={remediationEditValue}
+                  onChange={(e) => setRemediationEditValue(e.target.value)}
+                  placeholder="Enter your approved remediation plan..."
+                  className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      handleInputChange('remediation_confirmed', remediationEditValue);
+                      handleInputChange('remediation_last_modified_by', 'current-user');
+                      handleInputChange('remediation_last_modified_at', new Date().toISOString());
+                      setIsEditingRemediation(false);
+                    }}
+                    className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 rounded font-medium transition-colors flex items-center justify-center gap-2"
+                  >
+                    <Check size={16} />
+                    Confirm Plan
+                  </button>
+                  <button
+                    onClick={() => setIsEditingRemediation(false)}
+                    className="flex-1 bg-slate-300 dark:bg-slate-600 text-slate-900 dark:text-white py-2 rounded font-medium transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={() => {
+                  setRemediationEditValue(formState.remediation_confirmed || formState.remediation_suggested || '');
+                  setIsEditingRemediation(true);
+                }}
+                className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+              >
+                <Edit2 size={16} />
+                {formState.remediation_confirmed ? 'Edit Confirmed Plan' : 'Confirm & Edit Plan'}
+              </button>
+            )}
           </section>
 
           {validationIssues.length > 0 && (
