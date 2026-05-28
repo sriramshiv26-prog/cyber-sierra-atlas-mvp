@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react';
-import { 
-  FileText, 
-  ArrowRight, 
-  ShieldAlert, 
-  Server, 
+import {
+  FileText,
+  ArrowRight,
+  ShieldAlert,
+  Server,
   CheckCircle2,
+  AlertCircle,
   Search
 } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
@@ -108,18 +109,23 @@ export function GenealogyView() {
 
                 {/* RCA Section */}
                 {f.root_cause && (
-                  <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                  <div className="mt-8 pt-6 border-t border-slate-200 dark:border-slate-700">
                     <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">
-                        <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-700 dark:text-amber-400">
-                          <ShieldAlert size={18} />
-                        </div>
-                      </div>
+                      <AlertCircle size={18} className="text-blue-500 flex-shrink-0 mt-1" />
                       <div className="flex-1">
-                        <div className="text-xs font-bold text-slate-400 uppercase mb-2">Root Cause Analysis</div>
-                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+                        <div className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase mb-2">
+                          Root Cause Analysis
+                        </div>
+
+                        <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap leading-relaxed mb-3">
                           {f.root_cause}
                         </p>
+
+                        {f.rca_category && (
+                          <div className="inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded text-xs font-medium">
+                            {f.rca_category}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
