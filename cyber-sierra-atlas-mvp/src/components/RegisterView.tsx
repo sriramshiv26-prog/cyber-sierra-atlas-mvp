@@ -1,9 +1,10 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Search, 
-  Filter, 
-  ChevronRight, 
-  Clock
+import {
+  Search,
+  Filter,
+  ChevronRight,
+  Clock,
+  Copy
 } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
 import { useFilters } from '../hooks/useFilters';
@@ -17,16 +18,25 @@ export function RegisterView() {
   const [activeFinding, setActiveFinding] = useState<Finding | null>(null);
 
   const [showOnlyOverdue, setShowOnlyOverdue] = useState(false);
+  const [showOnlyDuplicates, setShowOnlyDuplicates] = useState(false);
 
   const filteredFindings = useMemo(() => {
     let results = applyFilters(store.findings);
+
     if (showOnlyOverdue) {
       results = results.filter(f =>
         f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved'
       );
     }
+
+    if (showOnlyDuplicates) {
+      results = results.filter(f =>
+        f.duplicate_group_id || (f.is_confirmed_unique === false && !f.duplicate_group_id)
+      );
+    }
+
     return results;
-  }, [store.findings, filters, applyFilters, showOnlyOverdue]);
+  }, [store.findings, filters, applyFilters, showOnlyOverdue, showOnlyDuplicates]);
 
   const openFinding = (finding: Finding) => {
     setActiveFinding(finding);
@@ -79,6 +89,17 @@ export function RegisterView() {
           >
             <Clock size={16} />
             Overdue Only
+          </button>
+          <button
+            onClick={() => setShowOnlyDuplicates(!showOnlyDuplicates)}
+            className={`p-2 border rounded-lg transition-colors font-medium text-xs flex items-center gap-2 px-3 ${
+              showOnlyDuplicates
+                ? 'bg-blue-100 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+            }`}
+          >
+            <Copy size={16} />
+            Duplicates Only
           </button>
           <button className="p-2 border rounded-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
             <Filter size={18} />
@@ -150,15 +171,24 @@ export function RegisterView() {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-center">
-                      <div className="flex items-center justify-center gap-2">
+                      <div className="flex items-center justify-center gap-2 flex-wrap">
+                        {f.duplicate_group_id ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-[10px] font-bold">
+                            <Copy size={10} /> Duplicate
+                          </span>
+                        ) : f.is_confirmed_unique === true ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded text-[10px] font-bold">
+                            ✓ Unique
+                          </span>
+                        ) : f.is_confirmed_unique === false && !f.duplicate_group_id ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400 rounded text-[10px] font-bold">
+                            ? Review
+                          </span>
+                        ) : null}
+
                         {f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved' && (
                           <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded text-[10px] font-bold">
                             <Clock size={10} /> Overdue
-                          </span>
-                        )}
-                        {f.is_confirmed_unique === false && (
-                          <span className="inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-[10px] font-bold">
-                            Duplicate
                           </span>
                         )}
                       </div>
