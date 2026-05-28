@@ -275,16 +275,32 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
               <AlertCircle size={14} /> Root Cause Analysis
             </div>
-            <div className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">RCA (5-10 sentences)</label>
-              <textarea
-                rows={3}
-                value={formState.root_cause || ''}
-                onChange={(e) => handleInputChange('root_cause', e.target.value)}
-                placeholder="Describe the root cause of this finding. What underlying issue led to this vulnerability?"
-                className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20 text-sm"
-              />
-              <p className="text-[10px] text-slate-400 dark:text-slate-500">Optional: Help teams understand the underlying cause, not just the symptom.</p>
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">RCA (5-10 sentences)</label>
+                <textarea
+                  rows={4}
+                  value={formState.root_cause || ''}
+                  onChange={(e) => handleInputChange('root_cause', e.target.value)}
+                  placeholder="Describe the root cause of this finding (5-10 sentences). Include: What went wrong, Why it happened, Where the gap is..."
+                  className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20 text-sm"
+                />
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">Optional: Help teams understand the underlying cause, not just the symptom.</p>
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">RCA Category (Optional)</label>
+                <select
+                  value={formState.rca_category || ''}
+                  onChange={(e) => handleInputChange('rca_category', e.target.value)}
+                  className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20"
+                >
+                  <option value="">-- Select Category --</option>
+                  <option value="Configuration">Configuration Error</option>
+                  <option value="Missing Patch">Missing Security Patch</option>
+                  <option value="Weak Controls">Weak Security Controls</option>
+                  <option value="Design Flaw">Design Flaw</option>
+                </select>
+              </div>
             </div>
           </section>
 
