@@ -133,6 +133,23 @@ export function DashboardView() {
   // Asset Risk Spider Chart Data
   const assetRiskProfiles = useMemo(() => buildAssetRiskProfiles(findings), [findings]);
 
+  // Asset Risk Ranking for Bar Chart
+  const assetRankingData = useMemo(() =>
+    assetRiskProfiles.map(profile => ({
+      name: profile.assetName,
+      riskScore: Math.round(profile.totalRiskScore),
+      level: profile.totalRiskScore >= 70 ? 'High' :
+             profile.totalRiskScore >= 50 ? 'Medium' : 'Low'
+    })),
+    [assetRiskProfiles]
+  );
+
+  const getRiskColor = (score) => {
+    if (score >= 70) return '#C9432B';
+    if (score >= 50) return '#E5733A';
+    return '#2E8AB0';
+  };
+
   return (
     <div className="p-8 space-y-8 bg-slate-50 dark:bg-slate-900 min-h-full">
       
@@ -179,6 +196,34 @@ export function DashboardView() {
         <KPITile label="Overdue Items" value={overdueCount} color="bg-orange-500" />
         <KPITile label="Unique Assets" value={assetsCount} color="bg-purple-500" />
       </div>
+
+      {/* Asset Risk Ranking (Bar Chart) */}
+      {assetRankingData.length > 0 && (
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-6">Top 5 Assets: Risk Ranking</h3>
+          <div className="h-[280px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={assetRankingData} layout="vertical" margin={{ top: 5, right: 30, left: 150, bottom: 5 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis type="number" domain={[0, 100]} tick={{fontSize: 12, fill: '#64748b'}} />
+                <YAxis dataKey="name" type="category" width={145} tick={{fontSize: 11, fill: '#64748b'}} />
+                <Tooltip
+                  contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                  formatter={(value) => [`${value}/100`, 'Risk Score']}
+                />
+                <Bar dataKey="riskScore" fill="#C9432B" radius={[0, 8, 8, 0]}>
+                  {assetRankingData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={getRiskColor(entry.riskScore)} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+            <p>Normalized risk score 0-100: combines vulnerability count, severity, open %, overdue items, and control effectiveness</p>
+          </div>
+        </div>
+      )}
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
