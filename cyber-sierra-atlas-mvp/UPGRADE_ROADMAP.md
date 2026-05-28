@@ -54,17 +54,26 @@ This document outlines the strategic growth path for the Cyber Sierra Atlas. It 
 
 ## 🎯 Phase 2A: "Zero-Dependency" Enhancements - CHARTS COMPLETE ✅
 
-**Status:** Partially Complete (2 of 5 features) — 2026-05-28  
-**Effort:** 2.5 hours (Severity × Age Heat Map + Asset Risk Spider Chart)  
+**Status:** Complete (3 of 3 features) — 2026-05-28  
+**Effort:** 3 hours total (Heat Map + Spider Chart + Risk Ranking Bar)  
 **Cost:** $0 (Qwen2.5-coder local)
 
 ### Completed Phase 2A Features
 
 - [x] **Severity × Age Heat Map** — Shows findings by severity (rows) × age brackets (columns). Color intensity (green=new, red=old) reveals SLA violations at a glance. Implementation: `src/lib/chart-utils.ts`, DashboardView new section. 277 LOC, builds in 3.95s.
 
-- [x] **Asset Risk Spider Chart** — Replaces bar chart with 5-dimensional radar showing top 5 assets. Dimensions: Vulnerability Count, Avg Severity, Open %, Overdue Count, Control Gap. Multi-dimensional view beats single-number ranking. Recharts RadarChart + normalization logic.
+- [x] **Asset Risk Spider Chart** — 5-dimensional radar showing top 5 assets. Dimensions: Vulnerability Count, Avg Severity, Open %, Overdue Count, Control Gap. Multi-dimensional view for deep-dive analysis. Recharts RadarChart + normalization logic.
 
-**Commit:** `43602b6` — "feat: Implement Severity × Age Heat Map and Asset Risk Spider Chart"
+- [x] **Asset Risk Ranking Bar Chart** — Horizontal bar chart showing top 5 assets by overall risk score (0-100). Color-coded: Red=High (70+), Orange=Medium (50+), Blue=Low (<50). Positioned above radar for "which asset" quick triage + "why" deep-dive workflow. 45 LOC, builds in 4.03s.
+
+**Commits:** 
+- `43602b6` — "feat: Implement Severity × Age Heat Map and Asset Risk Spider Chart"
+- `43204b2` — "feat: Add asset risk ranking bar chart alongside radar for dual-view triage"
+
+**Design Rationale:** Dual-chart approach serves complementary purposes:
+- Bar chart = Quick ranking ("which assets need attention?")
+- Radar chart = Risk composition ("why are they risky?")
+- Workflow: Analyst scans bar → clicks asset → sees 5-dimensional profile → understands risk breakdown
 
 ---
 
@@ -109,6 +118,37 @@ This document outlines the strategic growth path for the Cyber Sierra Atlas. It 
 - [ ] Impact scoring: Finding risk × asset criticality = business impact score
 - [ ] Dashboard: Business Impact Trend chart (cost exposed over time)
 - **Status:** Deferred (requires business data) | **Planned Start:** 2026-06-10 (Phase 3)
+
+---
+
+## Dashboard Layout: Phase 2A Complete
+
+**KPI Row (5 metrics):**
+Total Findings | Active Risk | Critical (Open) | Overdue Items | Unique Assets
+
+**Charts Section:**
+```
+┌──────────────────────────────────────────────┐
+│ Top 5 Assets: Risk Ranking (Bar Chart)       │
+│ Horizontal bars showing 0-100 risk score     │
+│ Red/Orange/Blue color-coded by risk level    │
+└──────────────────────────────────────────────┘
+
+┌──────────────────┬──────────────────────────┐
+│ Severity Dist.   │ Risk Profiles            │
+│ (Pie Chart)      │ (Radar Chart - 5 dims)   │
+└──────────────────┴──────────────────────────┘
+
+┌──────────────────────────────────────────────┐
+│ Risk Velocity (Line Chart)                   │
+│ Discovery vs Closure trends                  │
+└──────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────┐
+│ Severity × Age Heat Map (Table)              │
+│ 5 severity × 5 age brackets color-coded      │
+└──────────────────────────────────────────────┘
+```
 
 ---
 
