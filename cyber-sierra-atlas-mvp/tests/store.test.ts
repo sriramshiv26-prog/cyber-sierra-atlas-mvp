@@ -37,4 +37,53 @@ describe('Store Reducer', () => {
     const state = storeReducer(stateWithFinding, action);
     expect(state.findings).toHaveLength(0);
   });
+
+  it('should merge duplicates', () => {
+    const stateWithFindings = {
+      ...initialState,
+      findings: [
+        { id: 'F1', title: 'Master', is_confirmed_unique: false },
+        { id: 'F2', title: 'Duplicate', is_confirmed_unique: false },
+        { id: 'F3', title: 'Other', is_confirmed_unique: false },
+      ],
+    };
+    const action = {
+      type: 'MERGE_DUPLICATES',
+      payload: { masterId: 'F1', duplicateIds: ['F2'] },
+    };
+    const state = storeReducer(stateWithFindings, action);
+    expect(state.findings[0].is_confirmed_unique).toBe(true);
+    expect(state.findings[0].duplicate_group_id).toBeUndefined();
+    expect(state.findings[1].duplicate_group_id).toBe('F1');
+    expect(state.findings[1].is_confirmed_unique).toBe(false);
+    expect(state.lastSaved).not.toBe(initialState.lastSaved);
+  });
+
+  it('should confirm a finding as unique', () => {
+    const stateWithFinding = {
+      ...initialState,
+      findings: [
+        { id: 'F1', title: 'Test', is_confirmed_unique: false, duplicate_group_id: 'F2' },
+      ],
+    };
+    const action = { type: 'CONFIRM_UNIQUE', payload: 'F1' };
+    const state = storeReducer(stateWithFinding, action);
+    expect(state.findings[0].is_confirmed_unique).toBe(true);
+    expect(state.findings[0].duplicate_group_id).toBeUndefined();
+    expect(state.lastSaved).not.toBe(initialState.lastSaved);
+  });
+
+  it('should unmark a duplicate', () => {
+    const stateWithFinding = {
+      ...initialState,
+      findings: [
+        { id: 'F1', title: 'Test', is_confirmed_unique: true, duplicate_group_id: 'F2' },
+      ],
+    };
+    const action = { type: 'UNMARK_DUPLICATE', payload: 'F1' };
+    const state = storeReducer(stateWithFinding, action);
+    expect(state.findings[0].is_confirmed_unique).toBeUndefined();
+    expect(state.findings[0].duplicate_group_id).toBeUndefined();
+    expect(state.lastSaved).not.toBe(initialState.lastSaved);
+  });
 });
