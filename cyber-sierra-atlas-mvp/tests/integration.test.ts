@@ -191,20 +191,30 @@ describe('Integration: Validation Engine', () => {
 });
 
 describe('Integration: Risk Scoring', () => {
-  it('should calculate correct risk scores', () => {
-    const criticalOnCritical = calculateRiskScore('Critical', 'Critical');
+  it('should calculate correct risk scores with control effectiveness', () => {
+    // Critical on Critical with no controls (1.0) = (10 * 2.0 / 1.0) * 5 = 100
+    const criticalOnCritical = calculateRiskScore('Critical', 'Critical', 1.0);
     expect(criticalOnCritical).toBe(100);
 
-    const lowOnLow = calculateRiskScore('Low', 'Low');
+    // Low on Low with no controls (1.0) = (2 * 0.5 / 1.0) * 5 = 5
+    const lowOnLow = calculateRiskScore('Low', 'Low', 1.0);
     expect(lowOnLow).toBe(5);
 
-    const highOnHigh = calculateRiskScore('High', 'High');
+    // High on High with no controls (1.0) = (7 * 1.5 / 1.0) * 5 = 52.5
+    const highOnHigh = calculateRiskScore('High', 'High', 1.0);
     expect(highOnHigh).toBe(52.5);
   });
 
-  it('should default to Medium criticality if not provided', () => {
+  it('should reduce score with effective controls', () => {
+    // Same vulnerability with 50% effective controls should score higher
+    const noControls = calculateRiskScore('Critical', 'Critical', 1.0);
+    const withControls = calculateRiskScore('Critical', 'Critical', 0.5);
+    expect(withControls).toBeGreaterThan(noControls);
+  });
+
+  it('should default to Medium criticality and full control weight if not provided', () => {
     const score1 = calculateRiskScore('Critical');
-    const score2 = calculateRiskScore('Critical', 'Medium');
+    const score2 = calculateRiskScore('Critical', 'Medium', 1.0);
     expect(score1).toBe(score2);
   });
 
@@ -217,7 +227,7 @@ describe('Integration: Risk Scoring', () => {
   });
 
   it('should clamp scores between 0 and 100', () => {
-    const score = calculateRiskScore('Critical', 'Critical');
+    const score = calculateRiskScore('Critical', 'Critical', 1.0);
     expect(score).toBeGreaterThanOrEqual(0);
     expect(score).toBeLessThanOrEqual(100);
   });
