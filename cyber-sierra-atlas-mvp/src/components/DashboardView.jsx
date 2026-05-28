@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
@@ -8,6 +8,7 @@ import { Download } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
 import { exportFindingsAsCSV, exportStoreAsJSON, exportFindingsAsMarkdown, downloadFile } from '../lib/export';
 import { buildSeverityAgeHeatMap, buildAssetRiskProfiles, SEVERITY_LEVELS, AGE_BRACKETS } from '../lib/chart-utils';
+import { OverdueDetailModal } from './OverdueDetailModal';
 
 /**
  * Enterprise Dashboard Component
@@ -40,6 +41,7 @@ function KPITile({ label, value, color, trend }) {
 export function DashboardView() {
   const { store } = useStore();
   const { findings } = store;
+  const [showOverdueModal, setShowOverdueModal] = useState(false);
 
   // Export handlers
   const handleExportCSV = () => {
@@ -193,7 +195,12 @@ export function DashboardView() {
         <KPITile label="Total Findings" value={total} color="bg-blue-500" trend="+12%" />
         <KPITile label="Active Risk" value={openCount} color="bg-yellow-500" />
         <KPITile label="Critical (Open)" value={criticalOpen} color="bg-red-500" />
-        <KPITile label="Overdue Items" value={overdueCount} color="bg-orange-500" />
+        <div
+          onClick={() => overdueCount > 0 && setShowOverdueModal(true)}
+          className={overdueCount > 0 ? 'cursor-pointer' : ''}
+        >
+          <KPITile label="Overdue Items" value={overdueCount} color="bg-orange-500" />
+        </div>
         <KPITile label="Unique Assets" value={assetsCount} color="bg-purple-500" />
       </div>
 
@@ -405,6 +412,13 @@ export function DashboardView() {
           </div>
         </div>
       )}
+
+      {/* Overdue Detail Modal */}
+      <OverdueDetailModal
+        findings={findings}
+        isOpen={showOverdueModal}
+        onClose={() => setShowOverdueModal(false)}
+      />
     </div>
   );
 }
