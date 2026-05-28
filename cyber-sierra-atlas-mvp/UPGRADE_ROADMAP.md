@@ -52,8 +52,24 @@ This document outlines the strategic growth path for the Cyber Sierra Atlas. It 
 
 ---
 
-## 🎯 Phase 2: Planned "Zero-Dependency" Enhancements (Horizon 2A & 2B)
-*Next tier of operational and data quality improvements. Planning complete: 2026-05-28. Implementation target: Week of 2026-06-02.*
+## 🎯 Phase 2A: "Zero-Dependency" Enhancements - CHARTS COMPLETE ✅
+
+**Status:** Partially Complete (2 of 5 features) — 2026-05-28  
+**Effort:** 2.5 hours (Severity × Age Heat Map + Asset Risk Spider Chart)  
+**Cost:** $0 (Qwen2.5-coder local)
+
+### Completed Phase 2A Features
+
+- [x] **Severity × Age Heat Map** — Shows findings by severity (rows) × age brackets (columns). Color intensity (green=new, red=old) reveals SLA violations at a glance. Implementation: `src/lib/chart-utils.ts`, DashboardView new section. 277 LOC, builds in 3.95s.
+
+- [x] **Asset Risk Spider Chart** — Replaces bar chart with 5-dimensional radar showing top 5 assets. Dimensions: Vulnerability Count, Avg Severity, Open %, Overdue Count, Control Gap. Multi-dimensional view beats single-number ranking. Recharts RadarChart + normalization logic.
+
+**Commit:** `43602b6` — "feat: Implement Severity × Age Heat Map and Asset Risk Spider Chart"
+
+---
+
+## 🎯 Phase 2B: Planned "Zero-Dependency" Enhancements (Horizon 2B & 2C)
+*Operational quality + compliance features. Planning complete: 2026-05-28. Implementation roadmap: `docs/HORIZON_2_ENHANCEMENT_PLAN.md`*
 
 **Total Effort:** 18-24 hours | **Total Cost:** $0 (Qwen2.5-coder local) | **Model:** Qwen2.5-coder-1.5B
 
