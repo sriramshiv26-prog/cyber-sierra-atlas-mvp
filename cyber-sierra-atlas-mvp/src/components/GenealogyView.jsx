@@ -105,6 +105,25 @@ export function GenealogyView() {
                     </div>
                   </div>
                 </div>
+
+                {/* RCA Section */}
+                {f.root_cause && (
+                  <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700">
+                    <div className="flex items-start gap-4">
+                      <div className="flex-shrink-0">
+                        <div className="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg text-amber-700 dark:text-amber-400">
+                          <ShieldAlert size={18} />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="text-xs font-bold text-slate-400 uppercase mb-2">Root Cause Analysis</div>
+                        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
+                          {f.root_cause}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}

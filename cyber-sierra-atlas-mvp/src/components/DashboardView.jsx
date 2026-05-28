@@ -61,6 +61,9 @@ export function DashboardView() {
   const openCount = findings.filter(f => f.status === 'Open').length;
   const criticalOpen = findings.filter(f => f.severity === 'Critical' && f.status === 'Open').length;
   const assetsCount = new Set(findings.map(f => f.asset_id)).size;
+  const overdueCount = findings.filter(f =>
+    f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved'
+  ).length;
 
   // Severity Distribution for Pie Chart
   const severityData = Object.keys(SEVERITY_COLORS).map(sev => ({
@@ -162,10 +165,11 @@ export function DashboardView() {
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         <KPITile label="Total Findings" value={total} color="bg-blue-500" trend="+12%" />
         <KPITile label="Active Risk" value={openCount} color="bg-yellow-500" />
         <KPITile label="Critical (Open)" value={criticalOpen} color="bg-red-500" />
+        <KPITile label="Overdue Items" value={overdueCount} color="bg-orange-500" />
         <KPITile label="Unique Assets" value={assetsCount} color="bg-purple-500" />
       </div>
 

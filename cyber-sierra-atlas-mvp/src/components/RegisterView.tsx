@@ -16,7 +16,17 @@ export function RegisterView() {
   const [isOpen, setIsOpen] = useState(false);
   const [activeFinding, setActiveFinding] = useState<Finding | null>(null);
 
-  const filteredFindings = useMemo(() => applyFilters(store.findings), [store.findings, filters, applyFilters]);
+  const [showOnlyOverdue, setShowOnlyOverdue] = useState(false);
+
+  const filteredFindings = useMemo(() => {
+    let results = applyFilters(store.findings);
+    if (showOnlyOverdue) {
+      results = results.filter(f =>
+        f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved'
+      );
+    }
+    return results;
+  }, [store.findings, filters, applyFilters, showOnlyOverdue]);
 
   const openFinding = (finding: Finding) => {
     setActiveFinding(finding);
@@ -59,6 +69,17 @@ export function RegisterView() {
               className="w-full pl-9 pr-4 py-2 text-sm border rounded-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:ring-2 focus:ring-cs-navy/20 outline-none transition-all"
             />
           </div>
+          <button
+            onClick={() => setShowOnlyOverdue(!showOnlyOverdue)}
+            className={`p-2 border rounded-lg transition-colors font-medium text-xs flex items-center gap-2 px-3 ${
+              showOnlyOverdue
+                ? 'bg-orange-100 dark:bg-orange-900/30 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400'
+                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700'
+            }`}
+          >
+            <Clock size={16} />
+            Overdue Only
+          </button>
           <button className="p-2 border rounded-lg bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors">
             <Filter size={18} />
           </button>
@@ -75,6 +96,7 @@ export function RegisterView() {
                 <th className="px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Severity</th>
                 <th className="px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Asset</th>
                 <th className="px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Due Date</th>
+                <th className="px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Flags</th>
                 <th className="px-6 py-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-right">Actions</th>
               </tr>
             </thead>
@@ -125,6 +147,20 @@ export function RegisterView() {
                       <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                         <Clock size={14} />
                         {f.due_date ? new Date(f.due_date).toLocaleDateString() : 'No date'}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex items-center justify-center gap-2">
+                        {f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved' && (
+                          <span className="inline-flex items-center gap-1 px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 rounded text-[10px] font-bold">
+                            <Clock size={10} /> Overdue
+                          </span>
+                        )}
+                        {f.is_confirmed_unique === false && (
+                          <span className="inline-flex items-center px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded text-[10px] font-bold">
+                            Duplicate
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-6 py-4 text-right">

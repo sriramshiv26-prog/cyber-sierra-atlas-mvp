@@ -273,6 +273,23 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
 
           <section className="space-y-4">
             <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
+              <AlertCircle size={14} /> Root Cause Analysis
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">RCA (5-10 sentences)</label>
+              <textarea
+                rows={3}
+                value={formState.root_cause || ''}
+                onChange={(e) => handleInputChange('root_cause', e.target.value)}
+                placeholder="Describe the root cause of this finding. What underlying issue led to this vulnerability?"
+                className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20 text-sm"
+              />
+              <p className="text-[10px] text-slate-400 dark:text-slate-500">Optional: Help teams understand the underlying cause, not just the symptom.</p>
+            </div>
+          </section>
+
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
               <Paperclip size={14} /> Evidence Vault
             </div>
             <div className="space-y-3">
@@ -323,6 +340,33 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
             </div>
           </section>
 
+          <section className="space-y-4">
+            <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-400">
+              <Wand2 size={14} /> Remediation Notes
+            </div>
+            <div className="space-y-1">
+              <label className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase">Remediation Plan</label>
+              <textarea
+                rows={4}
+                value={formState.remediation_notes || ''}
+                onChange={(e) => handleInputChange('remediation_notes', e.target.value)}
+                placeholder="Enter remediation steps, action items, or suggested fixes. You can edit the AI-generated plan here."
+                className="w-full px-3 py-2 border rounded-lg bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white outline-none focus:ring-2 focus:ring-cs-navy/20 text-sm font-mono text-[11px]"
+              />
+              <div className="flex items-center justify-between">
+                <p className="text-[10px] text-slate-400 dark:text-slate-500">Edit or add remediation details. Use "Generate Plan" to get AI suggestions.</p>
+                <button
+                  onClick={handleGenerateRemediationPlan}
+                  disabled={isGenerating}
+                  className="flex items-center gap-1 px-3 py-1 text-xs font-medium text-cs-navy dark:text-cs-cyan-400 hover:bg-cs-light dark:hover:bg-slate-700 rounded transition-colors disabled:opacity-50 shrink-0"
+                >
+                  {isGenerating ? <Loader2 size={12} className="animate-spin" /> : <Wand2 size={12} />}
+                  {isGenerating ? 'Generating...' : 'Generate'}
+                </button>
+              </div>
+            </div>
+          </section>
+
           {validationIssues.length > 0 && (
             <div className="p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 space-y-2">
               <div className="flex items-center gap-2 text-xs font-bold text-yellow-700 dark:text-yellow-500 uppercase">
@@ -340,22 +384,12 @@ export function FindingDrawer({ finding, isOpen, onClose }: FindingDrawerProps) 
         </div>
 
         <div className="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-          <div className="flex gap-3">
-            <button
-              onClick={handleDelete}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-            >
-              <Trash2 size={16} /> Delete
-            </button>
-            <button
-              onClick={handleGenerateRemediationPlan}
-              disabled={isGenerating}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-cs-navy dark:text-cs-cyan-400 hover:bg-cs-light dark:hover:bg-slate-700 rounded-lg transition-colors disabled:opacity-50"
-            >
-              {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Wand2 size={16} />}
-              {isGenerating ? 'Generating...' : 'Generate Plan'}
-            </button>
-          </div>
+          <button
+            onClick={handleDelete}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+          >
+            <Trash2 size={16} /> Delete
+          </button>
           <div className="flex gap-3">
             <button
               onClick={onClose}
