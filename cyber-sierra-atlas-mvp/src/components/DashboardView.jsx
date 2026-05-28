@@ -1,12 +1,13 @@
 import React, { useMemo } from 'react';
 import {
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Legend
+  XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
+  RadarChart, PolarAngleAxis, PolarRadiusAxis, PolarGrid, Radar
 } from 'recharts';
 import { Download } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
 import { exportFindingsAsCSV, exportStoreAsJSON, exportFindingsAsMarkdown, downloadFile } from '../lib/export';
+import { buildSeverityAgeHeatMap, buildAssetRiskProfiles, SEVERITY_LEVELS, AGE_BRACKETS } from '../lib/chart-utils';
 
 /**
  * Enterprise Dashboard Component
@@ -126,6 +127,12 @@ export function DashboardView() {
     });
   }, [findings]);
 
+  // Severity × Age Heat Map
+  const heatMapData = useMemo(() => buildSeverityAgeHeatMap(findings), [findings]);
+
+  // Asset Risk Spider Chart Data
+  const assetRiskProfiles = useMemo(() => buildAssetRiskProfiles(findings), [findings]);
+
   return (
     <div className="p-8 space-y-8 bg-slate-50 dark:bg-slate-900 min-h-full">
       
@@ -202,28 +209,51 @@ export function DashboardView() {
           </div>
         </div>
 
-        {/* Top Risk Assets */}
+        {/* Asset Risk Profile (Spider Chart) */}
         <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
-          <h3 className="text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-6">Top 5 At-Risk Assets</h3>
+          <h3 className="text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-6">Top 5 Assets: Risk Profile</h3>
           <div className="h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={assetData} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                <XAxis type="number" hide />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  width={100}
-                  tick={{fontSize: 12, fill: '#64748b'}}
-                />
-                <Tooltip
-                  cursor={{fill: 'transparent'}}
-                  contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
-                />
-                <Bar dataKey="value" fill="#183B65" radius={[0, 4, 4, 0]} barSize={20} />
-              </BarChart>
-            </ResponsiveContainer>
+            {assetRiskProfiles.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <RadarChart data={assetRiskProfiles[0]?.dimensions || []}>
+                  <PolarGrid stroke="#e2e8f0" />
+                  <PolarAngleAxis
+                    dataKey="name"
+                    tick={{fontSize: 11, fill: '#64748b'}}
+                    angle={90}
+                  />
+                  <PolarRadiusAxis
+                    angle={90}
+                    domain={[0, 100]}
+                    tick={{fontSize: 10, fill: '#94a3b8'}}
+                  />
+                  <Radar
+                    name={assetRiskProfiles[0]?.assetName}
+                    dataKey="value"
+                    stroke="#C9432B"
+                    fill="#C9432B"
+                    fillOpacity={0.3}
+                  />
+                  <Tooltip
+                    contentStyle={{borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)'}}
+                  />
+                  <Legend />
+                </RadarChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-slate-500 dark:text-slate-400">
+                <p>No assets to display</p>
+              </div>
+            )}
           </div>
+          {assetRiskProfiles.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700 text-xs text-slate-500 dark:text-slate-400">
+              <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Showing: {assetRiskProfiles[0]?.assetName}
+              </p>
+              <p>Radar shows 5 dimensions: Count, Severity, Open, Overdue, Control Weakness</p>
+            </div>
+          )}
         </div>
 
       </div>
@@ -277,6 +307,56 @@ export function DashboardView() {
                 />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+        </div>
+      )}
+
+      {/* Severity × Age Heat Map */}
+      {heatMapData.length > 0 && (
+        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm">
+          <h3 className="text-sm font-bold uppercase text-slate-500 dark:text-slate-400 mb-6">Severity × Age Heat Map</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-sm">
+              <thead>
+                <tr>
+                  <th className="p-2 text-left text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50">Severity</th>
+                  {AGE_BRACKETS.map(bracket => (
+                    <th key={bracket.label} className="p-2 text-center text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-900/50">
+                      {bracket.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {SEVERITY_LEVELS.map(severity => (
+                  <tr key={severity}>
+                    <td className="p-2 font-semibold text-slate-900 dark:text-white bg-slate-50 dark:bg-slate-900/50">
+                      {severity}
+                    </td>
+                    {AGE_BRACKETS.map(bracket => {
+                      const cell = heatMapData.find(c => c.severity === severity && c.age === bracket.label);
+                      return (
+                        <td
+                          key={`${severity}-${bracket.label}`}
+                          className="p-3 text-center font-semibold text-slate-900 dark:text-white rounded"
+                          style={{
+                            backgroundColor: cell?.color || '#f3f4f6',
+                            color: (cell?.count || 0) > 0 ? 'white' : '#6b7280'
+                          }}
+                        >
+                          {cell?.count || 0}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="mt-4 text-xs text-slate-500 dark:text-slate-400">
+            <p className="font-medium text-slate-700 dark:text-slate-300 mb-1">Legend:</p>
+            <p>Green zones = newer findings | Orange/Red zones = older findings (URGENT)</p>
+            <p className="mt-1">Shows findings by severity level and age in days from due date</p>
           </div>
         </div>
       )}
