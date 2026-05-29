@@ -1,22 +1,20 @@
 import React from 'react';
-import { X, AlertCircle, Clock } from 'lucide-react';
+import { X, AlertCircle, Clock, TrendingUp } from 'lucide-react';
+import { calculateOverdueStatus, getOverdueLabel } from '../lib/overdue';
 
 export function OverdueDetailModal({ findings, isOpen, onClose }) {
   if (!isOpen || findings.length === 0) return null;
 
-  const overdueFindings = findings.filter(f =>
-    f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved'
-  );
+  const overdueFindings = findings.filter(f => {
+    const status = calculateOverdueStatus(f);
+    return status.isOverdue;
+  });
 
-  const getOverdueDays = (dueDate) => {
-    const due = new Date(dueDate);
-    const now = new Date();
-    return Math.floor((now.getTime() - due.getTime()) / (1000 * 60 * 60 * 24));
-  };
-
-  const overdueByDays = overdueFindings.sort(
-    (a, b) => getOverdueDays(b.due_date) - getOverdueDays(a.due_date)
-  );
+  const overdueByDays = overdueFindings.sort((a, b) => {
+    const statusA = calculateOverdueStatus(a);
+    const statusB = calculateOverdueStatus(b);
+    return statusB.daysOverdue - statusA.daysOverdue;
+  });
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -36,11 +34,17 @@ export function OverdueDetailModal({ findings, isOpen, onClose }) {
 
         <div className="space-y-3">
           {overdueByDays.map(finding => {
-            const daysOverdue = getOverdueDays(finding.due_date);
+            const status = calculateOverdueStatus(finding);
+            const isWildlyOverdue = status.isWildlyOverdue;
+
             return (
               <div
                 key={finding.id}
-                className="p-4 border border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20 rounded-lg"
+                className={`p-4 border rounded-lg ${
+                  isWildlyOverdue
+                    ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20'
+                    : 'border-orange-200 dark:border-orange-800 bg-orange-50 dark:bg-orange-900/20'
+                }`}
               >
                 <div className="flex items-start justify-between mb-2">
                   <div className="flex-1">
@@ -52,8 +56,10 @@ export function OverdueDetailModal({ findings, isOpen, onClose }) {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-orange-600 dark:text-orange-400">
-                      {daysOverdue}d
+                    <div className={`text-lg font-bold ${
+                      isWildlyOverdue ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'
+                    }`}>
+                      {status.daysOverdue}d
                     </div>
                     <div className="text-xs text-slate-600 dark:text-slate-400">
                       past due
@@ -61,7 +67,7 @@ export function OverdueDetailModal({ findings, isOpen, onClose }) {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-sm">
+                <div className="flex items-center gap-4 text-sm mb-3">
                   <div>
                     <span className="text-slate-600 dark:text-slate-400">Owner:</span>
                     <span className="ml-2 font-medium text-slate-900 dark:text-white">
@@ -75,6 +81,15 @@ export function OverdueDetailModal({ findings, isOpen, onClose }) {
                     </span>
                   </div>
                 </div>
+
+                {isWildlyOverdue && (
+                  <div className="flex items-center gap-2 p-2 bg-red-100 dark:bg-red-900/40 rounded border border-red-200 dark:border-red-700">
+                    <TrendingUp size={14} className="text-red-600 dark:text-red-400" />
+                    <span className="text-xs font-medium text-red-700 dark:text-red-300">
+                      Risk score increased by 20% due to overdue status
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}

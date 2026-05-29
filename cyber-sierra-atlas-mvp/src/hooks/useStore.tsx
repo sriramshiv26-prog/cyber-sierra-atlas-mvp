@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Store, Finding, Asset } from '../lib/schema';
-import { mergeDuplicates, confirmUnique } from '../lib/dedup-rules';
+import { mergeDuplicates, confirmUnique, unmarkDuplicate, detectDuplicates } from '../lib/dedup-rules';
 
 type StoreAction =
   | { type: 'ADD_FINDINGS'; payload: Finding[] }
@@ -12,7 +12,8 @@ type StoreAction =
   | { type: 'LOAD_FROM_STORAGE'; payload: Store }
   | { type: 'MERGE_DUPLICATES'; payload: { masterId: string; duplicateIds: string[] } }
   | { type: 'CONFIRM_UNIQUE'; payload: string }
-  | { type: 'UNMARK_DUPLICATE'; payload: string };
+  | { type: 'UNMARK_DUPLICATE'; payload: string }
+  | { type: 'DETECT_DUPLICATES'; payload?: void };
 
 const StoreContext = createContext<{
   store: Store;
@@ -89,17 +90,44 @@ export function storeReducer(state: Store, action: StoreAction): Store {
       };
     }
     case 'UNMARK_DUPLICATE': {
+      const targetFinding = state.findings.find(f => f.id === action.payload);
+      if (!targetFinding) return state;
+      const updatedFinding = unmarkDuplicate(targetFinding);
       return {
         ...state,
-        findings: state.findings.map(f =>
-          f.id === action.payload
-            ? {
-                ...f,
-                is_confirmed_unique: undefined,
-                duplicate_group_id: undefined,
-              }
-            : f
-        ),
+        findings: state.findings.map(f => f.id === action.payload ? updatedFinding : f),
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'DETECT_DUPLICATES': {
+      const duplicateGroups = detectDuplicates(state.findings);
+
+      // Mark findings as potential duplicates (not confirmed unique yet)
+      const updatedFindings = state.findings.map(finding => {
+        // Skip if already marked as confirmed unique
+        if (finding.is_confirmed_unique === true) return finding;
+
+        // Find which group this finding belongs to
+        const groupIndex = duplicateGroups.findIndex(group => group.includes(finding.id));
+
+        if (groupIndex >= 0 && duplicateGroups[groupIndex].length > 1) {
+          // This is a potential duplicate (but not yet confirmed/merged)
+          return {
+            ...finding,
+            is_confirmed_unique: finding.is_confirmed_unique === false ? false : undefined,
+            flags: {
+              ...finding.flags,
+              duplicate: true,
+            },
+          };
+        }
+
+        return finding;
+      });
+
+      return {
+        ...state,
+        findings: updatedFindings,
         lastSaved: new Date().toISOString(),
       };
     }
@@ -154,10 +182,16 @@ export function useStore() {
     });
   };
 
-  const unmarkDuplicate = (findingId: string) => {
+  const unmarkDuplicateFinding = (findingId: string) => {
     context.dispatch({
       type: 'UNMARK_DUPLICATE',
       payload: findingId,
+    });
+  };
+
+  const detectDuplicatesAction = () => {
+    context.dispatch({
+      type: 'DETECT_DUPLICATES',
     });
   };
 
@@ -165,6 +199,7 @@ export function useStore() {
     ...context,
     mergeDuplicateFinding,
     confirmFindingUnique,
-    unmarkDuplicate,
+    unmarkDuplicateFinding,
+    detectDuplicatesAction,
   };
 }

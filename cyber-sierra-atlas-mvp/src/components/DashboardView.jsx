@@ -8,6 +8,7 @@ import { Download } from 'lucide-react';
 import { useStore } from '../hooks/useStore';
 import { exportFindingsAsCSV, exportStoreAsJSON, exportFindingsAsMarkdown, downloadFile } from '../lib/export';
 import { buildSeverityAgeHeatMap, buildAssetRiskProfiles, SEVERITY_LEVELS, AGE_BRACKETS } from '../lib/chart-utils';
+import { getOverdueFindings } from '../lib/overdue';
 import { OverdueDetailModal } from './OverdueDetailModal';
 
 /**
@@ -64,9 +65,7 @@ export function DashboardView() {
   const openCount = findings.filter(f => f.status === 'Open').length;
   const criticalOpen = findings.filter(f => f.severity === 'Critical' && f.status === 'Open').length;
   const assetsCount = new Set(findings.map(f => f.asset_id)).size;
-  const overdueCount = findings.filter(f =>
-    f.due_date && new Date(f.due_date) < new Date() && f.status !== 'Closed' && f.status !== 'Resolved'
-  ).length;
+  const overdueCount = getOverdueFindings(findings).length;
 
   // Severity Distribution for Pie Chart
   const severityData = Object.keys(SEVERITY_COLORS).map(sev => ({

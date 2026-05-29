@@ -12,7 +12,7 @@ import { FileUploadModal } from './components/FileUploadModal';
 import { SmartIngestPreview } from './components/SmartIngestPreview';
 
 function AppContent() {
-  const { store, dispatch } = useStore();
+  const { store, dispatch, detectDuplicatesAction } = useStore();
   const [view, setView] = useState('dashboard');
   const [theme, setTheme] = useState(() => localStorage.getItem('fr.theme') || 'light');
   const [density, setDensity] = useState(() => localStorage.getItem('fr.density') || 'cosy');
@@ -42,9 +42,11 @@ function AppContent() {
     reports: <ReportsView />,
   };
 
-  // Handle the final commit from Smard Ingest
+  // Handle the final commit from Smart Ingest - add findings and detect duplicates
   const handleCommitFindings = (finalFindings) => {
     dispatch({ type: 'ADD_FINDINGS', payload: finalFindings });
+    // Automatically run duplicate detection after new findings are added
+    setTimeout(() => detectDuplicatesAction(), 0);
     setPendingFindings(null);
     setView('register'); // Jump to register to see the results
   };
