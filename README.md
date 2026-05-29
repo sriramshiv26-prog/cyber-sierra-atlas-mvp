@@ -77,6 +77,7 @@ npm run dev
 | **Phase 1** | ✅ COMPLETE | Smart ingest, dedup, validation, dashboard, reports | Done |
 | **Phase 2B** | 📋 READY | RCA registration, overdue tracking, editable remediation, merge workflow | 6-9h |
 | **Phase 3** | 🎨 PLANNED | Heat maps, Sankey flow, trend analysis | 5-8h |
+| **Phase 4** | 📋 PLANNED | 12 audit report types, manual entry, consolidated register | 30-45h |
 
 **Tests:** 19/19 passing | **Code Quality:** 92/100 | **Security:** 0 vulnerabilities
 
@@ -126,6 +127,27 @@ npm run dev
 **Remediation Flow Sankey** | Visualize finding movement across states  
 **Risk Radar Chart** | 5-dimensional profile (severity, age, count, criticality, overdue)  
 **Trending Dashboard** | Time-series visibility for executive reviews
+
+### Phase 4 (Audit & Assessment Consolidation - Planned)
+
+**Multi-Source Report Ingestion**
+- Upload 12 audit/assessment report types (PDF, Excel, JSON, Word)
+- Types: Non-Conformity, Pen Test, Third-Party Assessment, External Audit, Risk Assessment, Vulnerability Scan, Internal Audit, Regulatory, Tabletop/IR, Incident, RCSA, Operational Issue
+- Auto-detection of report type from content
+- Claude API intelligent extraction of findings
+
+**Manual Finding Entry**
+- Add findings manually via form in "Upload & Parse" modal
+- Form validation and required field checking
+- Same standardization as uploaded reports
+
+**Unified Register**
+- Phase 2B findings + Phase 4 audit findings in single view
+- Filter by report type and source
+- Deduplication across different report sources
+- Consolidated audit trail and status tracking
+
+**Implementation:** See [Phase 4 Audit Consolidation Plan](cyber-sierra-atlas-mvp/docs/superpowers/plans/2026-05-29-phase4-audit-consolidation.md)
 
 ---
 
@@ -225,12 +247,20 @@ npm test -- --ui           # Visual UI
 
 | Document | Purpose |
 |----------|---------|
+| **Setup & Deployment** |  |
 | [GPU_MACHINE_SETUP.md](GPU_MACHINE_SETUP.md) | GPU deployment guide (7 steps) |
 | [GPU_MACHINE_QUICK_START.txt](GPU_MACHINE_QUICK_START.txt) | 5-minute quick reference |
-| [UI_REFERENCE_PHASE2B_PHASE3.html](UI_REFERENCE_PHASE2B_PHASE3.html) | Interactive UI mockup (8 tabs) |
+| **UI References** |  |
+| [UI_REFERENCE_PHASE2B_PHASE3.html](cyber-sierra-atlas-mvp/UI_REFERENCE_PHASE2B_PHASE3.html) | Interactive mockup (Phase 2B + Phase 3) |
+| [UI_REFERENCE_COMPLETE.html](cyber-sierra-atlas-mvp/UI_REFERENCE_COMPLETE.html) | Complete UI (Phase 2B + Phase 4) |
+| **Implementation Plans** |  |
+| [Phase 2B Plan](cyber-sierra-atlas-mvp/docs/superpowers/plans/2026-05-28-phase2b-implementation.md) | 12 tasks, 6-9h, finding management workflows |
+| [Phase 4 Plan](cyber-sierra-atlas-mvp/docs/superpowers/plans/2026-05-29-phase4-audit-consolidation.md) | 20 tasks, 30-45h, audit report consolidation |
+| **Architecture & Design** |  |
 | [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | System design & data flow |
 | [docs/FRONTEND_DESIGN_REVIEW_PHASE2B.md](docs/FRONTEND_DESIGN_REVIEW_PHASE2B.md) | Phase 2B UI specifications |
-| [docs/superpowers/plans/](docs/superpowers/plans/) | Detailed task breakdowns with code |
+| [docs/superpowers/plans/](cyber-sierra-atlas-mvp/docs/superpowers/plans/) | All detailed task breakdowns with code |
+| **Code Quality** |  |
 | [CODE_AUDIT.md](CODE_AUDIT.md) | Code quality (92/100) & security review |
 
 ---
@@ -253,12 +283,13 @@ npm test -- --ui           # Visual UI
 
 ## 🚀 Roadmap
 
-| Timeline | Focus | Goal |
-|----------|-------|------|
-| **Now** | Phase 1 foundation | Complete & tested |
-| **Next (6-9h)** | Phase 2B workflows | Finding management features |
-| **Later** | Phase 3 analytics | Advanced visualizations |
-| **Future** | Integrations | Slack, Jira, ServiceNow webhooks |
+| Timeline | Focus | Goal | Implementation |
+|----------|-------|------|---|
+| **Now** | Phase 1 foundation | Complete & tested | ✅ Done |
+| **Next (6-9h)** | Phase 2B workflows | Finding management features | 📋 Ready (see [Phase 2B Plan](cyber-sierra-atlas-mvp/docs/superpowers/plans/2026-05-28-phase2b-implementation.md)) |
+| **Later (5-8h)** | Phase 3 analytics | Heat maps, Sankey, trends | 🎨 Planned |
+| **Future (30-45h)** | Phase 4 audits | 12 report types, manual entry | 📋 Planned (see [Phase 4 Plan](cyber-sierra-atlas-mvp/docs/superpowers/plans/2026-05-29-phase4-audit-consolidation.md)) |
+| **Beyond** | Integrations | Slack, Jira, ServiceNow webhooks | 🚀 Roadmap |
 
 ---
 
