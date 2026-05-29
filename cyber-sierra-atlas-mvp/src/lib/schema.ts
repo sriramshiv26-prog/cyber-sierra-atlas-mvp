@@ -31,6 +31,7 @@ export interface Finding {
   // Business context
   due_date?: string; // ISO8601
   owner?: string;
+  /** @deprecated Use remediation_suggested and remediation_confirmed instead */
   remediation_notes?: string;
   evidence_url?: string;
 
@@ -43,7 +44,21 @@ export interface Finding {
     data_base64: string;
     uploaded_at: string;
   }>;
-  
+
+  // Deduplication (Phase 2B)
+  is_confirmed_unique?: boolean;
+  duplicate_group_id?: string;
+
+  // Root Cause Analysis (Phase 2B)
+  root_cause?: string;
+  rca_category?: 'Configuration' | 'Missing Patch' | 'Weak Controls' | 'Design Flaw';
+
+  // Editable Remediation (Phase 2B)
+  remediation_suggested?: string;
+  remediation_confirmed?: string;
+  remediation_last_modified_by?: string;
+  remediation_last_modified_at?: string;
+
   // Relationships
   related_findings: string[];
   deduped_with?: string;
