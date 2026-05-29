@@ -4,6 +4,7 @@ import * as XLSX from 'xlsx';
 import mammoth from 'mammoth';
 import { parseFindingsWithLLM } from './llm';
 import { Finding } from './schema';
+import { extractFromPDFWithFallback } from './pdf-extraction';
 
 /**
  * PDF.js worker configuration.
@@ -47,19 +48,18 @@ export async function detectAndParseFile(file: File): Promise<Finding[]> {
 
 async function extractTextFromPDF(file: File): Promise<string> {
   const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  let fullText = '';
+  const pdfBytes = new Uint8Array(arrayBuffer);
 
-  for (let i = 1; i <= pdf.numPages; i++) {
-    const page = await pdf.getPage(i);
-    const content = await page.getTextContent();
-    const pageText = content.items
-      .map((item: any) => item.str)
-      .join(' ');
-    fullText += pageText + '\n';
-  }
+  const result = await extractFromPDFWithFallback(pdfBytes, file.name);
 
-  return fullText;
+  console.log(`[Parser] PDF extraction completed:`, {
+    method: result.primaryMethod,
+    confidence: result.primaryConfidence,
+    validationStatus: result.validationStatus,
+    fileName: file.name,
+  });
+
+  return result.primaryText;
 }
 
 async function extractTextFromCSV(file: File): Promise<string> {
