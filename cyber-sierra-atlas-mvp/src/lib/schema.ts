@@ -5,7 +5,7 @@ export interface Finding {
   description: string;
   severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'Informational';
   status: 'Open' | 'In Progress' | 'Resolved' | 'Closed' | 'Risk Accepted';
-  
+
   // Genealogy
   source_document: {
     filename: string;
@@ -13,6 +13,9 @@ export interface Finding {
     parser_confidence: number; // 0.0-1.0
     raw_text?: string;
   };
+
+  // Audit report type (Phase 4)
+  audit_report_type?: 'non-conformity' | 'pen-test' | 'third-party-assessment' | 'external-audit' | 'risk-assessment' | 'vulnerability-scan' | 'internal-audit' | 'regulatory' | 'tabletop-ir' | 'incident' | 'rcsa' | 'operational-issue';
   
   // Asset mapping
   asset_id: string;
