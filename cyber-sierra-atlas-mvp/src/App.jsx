@@ -8,7 +8,7 @@ import { BlastRadiusView } from './components/BlastRadiusView';
 import { CrosswalkView } from './components/CrosswalkView';
 import { GenealogyView } from './components/GenealogyView';
 import { ReportsView } from './components/ReportsView';
-import { FileUploadModal } from './components/FileUploadModal';
+import { AuditUploadModal } from './components/AuditUploadModal';
 import { SmartIngestPreview } from './components/SmartIngestPreview';
 
 function AppContent() {
@@ -69,9 +69,9 @@ function AppContent() {
       </main>
 
       {/* Global Ingest Modals */}
-      <FileUploadModal 
-        isOpen={isUploadOpen} 
-        onClose={() => setIsUploadOpen(false)} 
+      <AuditUploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
         onParsedFindings={(findings) => {
           setPendingFindings(findings);
           setIsUploadOpen(false);
