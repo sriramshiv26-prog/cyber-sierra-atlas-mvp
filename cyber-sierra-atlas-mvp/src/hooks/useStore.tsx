@@ -13,7 +13,8 @@ type StoreAction =
   | { type: 'MERGE_DUPLICATES'; payload: { masterId: string; duplicateIds: string[] } }
   | { type: 'CONFIRM_UNIQUE'; payload: string }
   | { type: 'UNMARK_DUPLICATE'; payload: string }
-  | { type: 'DETECT_DUPLICATES'; payload?: void };
+  | { type: 'DETECT_DUPLICATES'; payload?: void }
+  | { type: 'UPDATE_REMEDIATION_STATUS'; findingId: string; status: 'open' | 'in_progress' | 'scheduled' | 'closed' };
 
 const StoreContext = createContext<{
   store: Store;
@@ -131,6 +132,18 @@ export function storeReducer(state: Store, action: StoreAction): Store {
         lastSaved: new Date().toISOString(),
       };
     }
+    case 'UPDATE_REMEDIATION_STATUS': {
+      const newFindings = state.findings.map(f =>
+        f.id === action.findingId
+          ? { ...f, remediation_status: action.status }
+          : f
+      );
+      return {
+        ...state,
+        findings: newFindings,
+        lastSaved: new Date().toISOString(),
+      };
+    }
     default:
       return state;
   }
@@ -195,11 +208,20 @@ export function useStore() {
     });
   };
 
+  const updateRemediationStatus = (findingId: string, status: 'open' | 'in_progress' | 'scheduled' | 'closed') => {
+    context.dispatch({
+      type: 'UPDATE_REMEDIATION_STATUS',
+      findingId,
+      status,
+    });
+  };
+
   return {
     ...context,
     mergeDuplicateFinding,
     confirmFindingUnique,
     unmarkDuplicateFinding,
     detectDuplicatesAction,
+    updateRemediationStatus,
   };
 }
