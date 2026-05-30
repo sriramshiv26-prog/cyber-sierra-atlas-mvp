@@ -22,46 +22,124 @@ export function AuditUploadModal({ isOpen, onClose, onParsedFindings }: AuditUpl
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-      <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-hidden flex flex-col border border-slate-200 dark:border-slate-700">
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      backdropFilter: 'blur(4px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50,
+      padding: '16px'
+    }}>
+      <div style={{
+        backgroundColor: 'var(--frt-bg)',
+        borderRadius: '12px',
+        boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+        width: '100%',
+        maxWidth: '700px',
+        maxHeight: '85vh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column',
+        border: '1px solid var(--frt-border)'
+      }}>
 
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
+        <div style={{
+          padding: '24px',
+          borderBottom: '1px solid var(--frt-border-soft)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-start',
+          backgroundColor: 'var(--frt-bg-soft)'
+        }}>
           <div>
-            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Add Audit Findings</h2>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Upload report or enter findings manually</p>
+            <h2 style={{
+              fontSize: '18px',
+              fontWeight: 600,
+              color: 'var(--frt-text-strong)',
+              marginBottom: '4px'
+            }}>Add Audit Findings</h2>
+            <p style={{
+              fontSize: '13px',
+              color: 'var(--frt-text-mid)',
+              margin: 0
+            }}>Upload security reports or enter findings manually</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-500 transition-colors">
+          <button
+            onClick={onClose}
+            style={{
+              background: 'none',
+              border: 'none',
+              padding: '8px',
+              color: 'var(--frt-text-mid)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
             <X size={20} />
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+        {/* Tab Navigation */}
+        <div style={{
+          display: 'flex',
+          borderBottom: '2px solid var(--frt-border)',
+          backgroundColor: 'var(--frt-bg)',
+          padding: '0 4px'
+        }}>
           <button
             onClick={() => setActiveTab('upload')}
-            className={`flex-1 px-4 py-3 font-medium border-b-2 transition-colors ${
-              activeTab === 'upload'
-                ? 'border-cs-navy text-cs-navy dark:border-cs-cyan-500 dark:text-cs-cyan-500'
-                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
+            style={{
+              flex: 1,
+              padding: '14px 16px',
+              fontWeight: 500,
+              fontSize: '14px',
+              color: activeTab === 'upload' ? 'var(--frt-accent)' : 'var(--frt-text-mid)',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: activeTab === 'upload' ? '3px solid var(--frt-accent)' : 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
           >
-            <Upload size={16} className="inline mr-2" /> Upload Report
+            <Upload size={16} /> Upload Report
           </button>
           <button
             onClick={() => setActiveTab('manual')}
-            className={`flex-1 px-4 py-3 font-medium border-b-2 transition-colors ${
-              activeTab === 'manual'
-                ? 'border-cs-navy text-cs-navy dark:border-cs-cyan-500 dark:text-cs-cyan-500'
-                : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
+            style={{
+              flex: 1,
+              padding: '14px 16px',
+              fontWeight: 500,
+              fontSize: '14px',
+              color: activeTab === 'manual' ? 'var(--frt-accent)' : 'var(--frt-text-mid)',
+              backgroundColor: 'transparent',
+              border: 'none',
+              borderBottom: activeTab === 'manual' ? '3px solid var(--frt-accent)' : 'none',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}
           >
-            <FileText size={16} className="inline mr-2" /> Manual Entry
+            <FileText size={16} /> Manual Entry
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-auto p-6">
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '24px'
+        }}>
           {activeTab === 'upload' && (
             <UploadTab onParsedFindings={onParsedFindings} onClose={onClose} setLoadingState={setLoadingState} setError={setError} loadingState={loadingState} error={error} />
           )}
@@ -126,76 +204,181 @@ function UploadTab({ onParsedFindings, onClose, setLoadingState, setError, loadi
   };
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       {loadingState === 'idle' && (
         <>
+          {/* Upload Hint Banner */}
+          {!error && (
+            <div className="fr-uploadhint">
+              <div className="fr-uploadhint-num">📄</div>
+              <div className="fr-uploadhint-body">
+                <div className="fr-uploadhint-title">Import security audit findings</div>
+                <div className="fr-uploadhint-steps">
+                  <div>1. Upload PDF, Excel, JSON, or Word report</div>
+                  <div>2. System extracts findings automatically</div>
+                  <div>3. Review and import to registry</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Drag Drop Zone */}
           <div
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
             onDragOver={handleDrag}
             onDrop={handleDrop}
-            className={`border-2 border-dashed rounded-xl p-8 text-center transition-all ${
-              dragActive
-                ? 'border-cs-navy bg-cs-navy/5 dark:border-cs-cyan-500 dark:bg-cs-cyan-500/5'
-                : 'border-slate-300 dark:border-slate-600 hover:border-cs-navy dark:hover:border-cs-cyan-500'
-            }`}
+            style={{
+              border: '2px dashed ' + (dragActive ? 'var(--frt-accent)' : 'var(--frt-border)'),
+              borderRadius: '10px',
+              padding: '32px 16px',
+              textAlign: 'center',
+              transition: 'all 0.2s ease',
+              backgroundColor: dragActive ? 'rgba(45, 214, 255, 0.05)' : 'transparent',
+              cursor: 'pointer'
+            }}
           >
-            <Upload size={32} className="mx-auto mb-3 text-slate-400" />
-            <p className="font-medium text-slate-900 dark:text-white mb-1">
+            <Upload size={40} style={{ margin: '0 auto 12px', color: 'var(--frt-text-mid)' }} />
+            <p style={{
+              fontSize: '15px',
+              fontWeight: 500,
+              color: 'var(--frt-text-strong)',
+              margin: '0 0 8px 0'
+            }}>
               Drag & drop your report here
             </p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">
-              or
+            <p style={{
+              fontSize: '13px',
+              color: 'var(--frt-text-mid)',
+              margin: '0 0 16px 0'
+            }}>
+              or select a file
             </p>
-            <label className="inline-block">
+            <label style={{
+              display: 'inline-block',
+              cursor: 'pointer'
+            }}>
               <input
                 type="file"
                 accept=".pdf,.xlsx,.xls,.json,.docx,.doc"
                 onChange={(e) => e.target.files && handleFile(e.target.files[0])}
-                className="hidden"
+                style={{ display: 'none' }}
               />
-              <span className="px-4 py-2 bg-cs-navy dark:bg-cs-cyan-600 text-white rounded-lg font-medium cursor-pointer hover:bg-cs-navy-700 transition-colors">
+              <span style={{
+                display: 'inline-block',
+                padding: '10px 20px',
+                backgroundColor: 'var(--frt-accent)',
+                color: 'var(--frt-on-accent)',
+                borderRadius: '7px',
+                fontWeight: 500,
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease'
+              }} onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')} onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}>
                 Browse Files
               </span>
             </label>
-            <p className="text-xs text-slate-400 dark:text-slate-500 mt-3">
+            <p style={{
+              fontSize: '12px',
+              color: 'var(--frt-text-dim)',
+              margin: '12px 0 0 0'
+            }}>
               PDF, Excel, JSON, Word (up to 25MB)
             </p>
           </div>
 
           {error && (
-            <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex gap-3">
-              <AlertCircle size={20} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+            <div style={{
+              padding: '12px 16px',
+              backgroundColor: 'rgba(255, 140, 112, 0.1)',
+              border: '1px solid var(--cs-danger)',
+              borderRadius: '7px',
+              display: 'flex',
+              gap: '12px'
+            }}>
+              <AlertCircle size={18} style={{ color: 'var(--cs-danger)', flexShrink: 0, marginTop: '2px' }} />
+              <p style={{
+                fontSize: '13px',
+                color: 'var(--cs-danger)',
+                margin: 0
+              }}>{error}</p>
             </div>
           )}
         </>
       )}
 
       {loadingState === 'extracting' && (
-        <div className="text-center py-12">
-          <Loader2 size={40} className="mx-auto mb-4 text-cs-navy dark:text-cs-cyan-500 animate-spin" />
-          <p className="font-medium text-slate-900 dark:text-white">Extracting findings...</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">This may take a moment</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 0'
+        }}>
+          <Loader2 size={40} style={{ margin: '0 auto 16px', color: 'var(--frt-accent)', animation: 'spin 1s linear infinite' }} />
+          <p style={{
+            fontSize: '15px',
+            fontWeight: 500,
+            color: 'var(--frt-text-strong)',
+            margin: '0 0 8px 0'
+          }}>Extracting findings...</p>
+          <p style={{
+            fontSize: '13px',
+            color: 'var(--frt-text-mid)',
+            margin: 0
+          }}>This may take a moment</p>
         </div>
       )}
 
       {loadingState === 'success' && (
-        <div className="text-center py-12">
-          <CheckCircle size={40} className="mx-auto mb-4 text-green-500" />
-          <p className="font-medium text-slate-900 dark:text-white">Extraction complete!</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400">Findings ready for review</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 0'
+        }}>
+          <CheckCircle size={40} style={{ margin: '0 auto 16px', color: 'var(--cs-success)' }} />
+          <p style={{
+            fontSize: '15px',
+            fontWeight: 500,
+            color: 'var(--frt-text-strong)',
+            margin: '0 0 8px 0'
+          }}>Extraction complete!</p>
+          <p style={{
+            fontSize: '13px',
+            color: 'var(--frt-text-mid)',
+            margin: 0
+          }}>Findings ready for review</p>
         </div>
       )}
 
       {loadingState === 'error' && (
-        <div className="text-center py-12">
-          <AlertCircle size={40} className="mx-auto mb-4 text-red-500" />
-          <p className="font-medium text-slate-900 dark:text-white">Extraction failed</p>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">{error}</p>
+        <div style={{
+          textAlign: 'center',
+          padding: '48px 0'
+        }}>
+          <AlertCircle size={40} style={{ margin: '0 auto 16px', color: 'var(--cs-danger)' }} />
+          <p style={{
+            fontSize: '15px',
+            fontWeight: 500,
+            color: 'var(--frt-text-strong)',
+            margin: '0 0 8px 0'
+          }}>Extraction failed</p>
+          <p style={{
+            fontSize: '13px',
+            color: 'var(--frt-text-mid)',
+            margin: '0 0 16px 0'
+          }}>{error}</p>
           <button
             onClick={() => setLoadingState('idle')}
-            className="px-4 py-2 bg-cs-navy dark:bg-cs-cyan-600 text-white rounded-lg font-medium hover:bg-cs-navy-700 transition-colors"
+            style={{
+              padding: '10px 20px',
+              backgroundColor: 'var(--frt-accent)',
+              color: 'var(--frt-on-accent)',
+              border: 'none',
+              borderRadius: '7px',
+              fontWeight: 500,
+              fontSize: '14px',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.opacity = '0.9')}
+            onMouseLeave={(e) => (e.currentTarget.style.opacity = '1')}
           >
             Try Again
           </button>
@@ -248,60 +431,86 @@ function ManualEntryTab({ onParsedFindings, onClose, setLoadingState, setError, 
 
   if (loadingState === 'extracting') {
     return (
-      <div className="text-center py-12">
-        <Loader2 size={40} className="mx-auto mb-4 text-cs-navy dark:text-cs-cyan-500 animate-spin" />
-        <p className="font-medium text-slate-900 dark:text-white">Creating finding...</p>
+      <div style={{ textAlign: 'center', padding: '48px 0' }}>
+        <Loader2 size={40} style={{ margin: '0 auto 16px', color: 'var(--frt-accent)', animation: 'spin 1s linear infinite' }} />
+        <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--frt-text-strong)', margin: '0 0 8px 0' }}>Creating finding...</p>
       </div>
     );
   }
 
   if (loadingState === 'success') {
     return (
-      <div className="text-center py-12">
-        <CheckCircle size={40} className="mx-auto mb-4 text-green-500" />
-        <p className="font-medium text-slate-900 dark:text-white">Finding created!</p>
-        <p className="text-sm text-slate-500 dark:text-slate-400">Ready for import</p>
+      <div style={{ textAlign: 'center', padding: '48px 0' }}>
+        <CheckCircle size={40} style={{ margin: '0 auto 16px', color: 'var(--cs-success)' }} />
+        <p style={{ fontSize: '15px', fontWeight: 500, color: 'var(--frt-text-strong)', margin: '0 0 8px 0' }}>Finding created!</p>
+        <p style={{ fontSize: '13px', color: 'var(--frt-text-mid)', margin: 0 }}>Ready for import</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      {/* Title Field */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Title <span className="text-red-500">*</span>
+        <label style={{
+          display: 'block',
+          fontSize: '13px',
+          fontWeight: 500,
+          color: 'var(--frt-text-strong)',
+          marginBottom: '6px'
+        }}>
+          Title <span style={{ color: 'var(--cs-danger)' }}>*</span>
         </label>
         <input
           type="text"
           value={formData.title}
           onChange={(e) => handleInputChange('title', e.target.value)}
           placeholder="e.g., SQL Injection vulnerability"
-          className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cs-navy dark:focus:border-cs-cyan-500"
+          className="fr-field"
+          style={{ width: '100%' }}
         />
       </div>
 
+      {/* Description Field */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-          Description <span className="text-red-500">*</span>
+        <label style={{
+          display: 'block',
+          fontSize: '13px',
+          fontWeight: 500,
+          color: 'var(--frt-text-strong)',
+          marginBottom: '6px'
+        }}>
+          Description <span style={{ color: 'var(--cs-danger)' }}>*</span>
         </label>
         <textarea
           value={formData.description}
           onChange={(e) => handleInputChange('description', e.target.value)}
           placeholder="Detailed description of the finding..."
-          rows={4}
-          className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cs-navy dark:focus:border-cs-cyan-500"
+          style={{
+            width: '100%',
+            minHeight: '120px'
+          }}
+          className="fr-longfield"
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      {/* Severity & Report Type */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Severity <span className="text-red-500">*</span>
+          <label style={{
+            display: 'block',
+            fontSize: '13px',
+            fontWeight: 500,
+            color: 'var(--frt-text-strong)',
+            marginBottom: '6px'
+          }}>
+            Severity <span style={{ color: 'var(--cs-danger)' }}>*</span>
           </label>
           <select
             value={formData.severity}
             onChange={(e) => handleInputChange('severity', e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-cs-navy dark:focus:border-cs-cyan-500"
+            className="fr-field"
+            style={{ width: '100%' }}
           >
             <option>Critical</option>
             <option>High</option>
@@ -311,13 +520,20 @@ function ManualEntryTab({ onParsedFindings, onClose, setLoadingState, setError, 
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-            Report Type <span className="text-red-500">*</span>
+          <label style={{
+            display: 'block',
+            fontSize: '13px',
+            fontWeight: 500,
+            color: 'var(--frt-text-strong)',
+            marginBottom: '6px'
+          }}>
+            Report Type <span style={{ color: 'var(--cs-danger)' }}>*</span>
           </label>
           <select
             value={formData.auditReportType}
             onChange={(e) => handleInputChange('auditReportType', e.target.value)}
-            className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white focus:outline-none focus:border-cs-navy dark:focus:border-cs-cyan-500"
+            className="fr-field"
+            style={{ width: '100%' }}
           >
             <option value="pen-test">Pen Test</option>
             <option value="external-audit">External Audit</option>
@@ -329,8 +545,15 @@ function ManualEntryTab({ onParsedFindings, onClose, setLoadingState, setError, 
         </div>
       </div>
 
+      {/* Asset Name */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+        <label style={{
+          display: 'block',
+          fontSize: '13px',
+          fontWeight: 500,
+          color: 'var(--frt-text-strong)',
+          marginBottom: '6px'
+        }}>
           Asset Name
         </label>
         <input
@@ -338,29 +561,47 @@ function ManualEntryTab({ onParsedFindings, onClose, setLoadingState, setError, 
           value={formData.assetName || ''}
           onChange={(e) => handleInputChange('assetName', e.target.value)}
           placeholder="e.g., API Server"
-          className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-cs-navy dark:focus:border-cs-cyan-500"
+          className="fr-field"
+          style={{ width: '100%' }}
         />
       </div>
 
+      {/* Error Messages */}
       {error && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg flex gap-2">
-          <AlertCircle size={16} className="text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+        <div style={{
+          padding: '12px 16px',
+          backgroundColor: 'rgba(255, 140, 112, 0.1)',
+          border: '1px solid var(--cs-danger)',
+          borderRadius: '7px',
+          display: 'flex',
+          gap: '12px'
+        }}>
+          <AlertCircle size={18} style={{ color: 'var(--cs-danger)', flexShrink: 0, marginTop: '2px' }} />
+          <p style={{ fontSize: '13px', color: 'var(--cs-danger)', margin: 0 }}>{error}</p>
         </div>
       )}
 
+      {/* Validation Errors */}
       {validation.errors.length > 0 && (
-        <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-          <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-2">Please fix:</p>
-          <ul className="text-sm text-red-700 dark:text-red-300 space-y-1">
+        <div style={{
+          padding: '12px 16px',
+          backgroundColor: 'rgba(255, 140, 112, 0.1)',
+          border: '1px solid var(--cs-danger)',
+          borderRadius: '7px'
+        }}>
+          <p style={{ fontSize: '13px', fontWeight: 500, color: 'var(--cs-danger)', margin: '0 0 8px 0' }}>Please fix:</p>
+          <ul style={{ fontSize: '13px', color: 'var(--cs-danger)', margin: 0, paddingLeft: '20px' }}>
             {validation.errors.map((err) => (
-              <li key={err}>• {err}</li>
+              <li key={err} style={{ margin: '4px 0' }}>
+                {err}
+              </li>
             ))}
           </ul>
         </div>
       )}
 
-      <div className="flex gap-3 pt-4">
+      {/* Action Buttons */}
+      <div style={{ display: 'flex', gap: '12px', paddingTop: '8px' }}>
         <button
           onClick={() => setFormData({
             title: '',
@@ -368,14 +609,40 @@ function ManualEntryTab({ onParsedFindings, onClose, setLoadingState, setError, 
             severity: 'High',
             auditReportType: 'pen-test',
           })}
-          className="flex-1 px-4 py-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white font-medium transition-colors"
+          style={{
+            flex: 1,
+            padding: '10px 16px',
+            backgroundColor: 'transparent',
+            color: 'var(--frt-text-mid)',
+            border: '1px solid var(--frt-border)',
+            borderRadius: '7px',
+            fontWeight: 500,
+            fontSize: '14px',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--frt-bg-soft)')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
         >
           Clear
         </button>
         <button
           onClick={handleSubmit}
           disabled={!validation.valid}
-          className="flex-1 px-4 py-2 bg-cs-navy dark:bg-cs-cyan-600 text-white font-medium rounded-lg hover:bg-cs-navy-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          style={{
+            flex: 1,
+            padding: '10px 16px',
+            backgroundColor: validation.valid ? 'var(--frt-accent)' : 'var(--frt-border)',
+            color: validation.valid ? 'var(--frt-on-accent)' : 'var(--frt-text-dim)',
+            border: 'none',
+            borderRadius: '7px',
+            fontWeight: 500,
+            fontSize: '14px',
+            cursor: validation.valid ? 'pointer' : 'not-allowed',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => validation.valid && (e.currentTarget.style.opacity = '0.9')}
+          onMouseLeave={(e) => validation.valid && (e.currentTarget.style.opacity = '1')}
         >
           Create Finding
         </button>

@@ -38,3 +38,108 @@ body.dark {
   background-color: #0A0F1E;
   color: #F1F5F9;
 }
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Design System Components */
+:root {
+  --frt-bg: #ffffff;
+  --frt-bg-soft: #f8f9fa;
+  --frt-bg-dim: #f0f1f3;
+  --frt-border: #d1d5db;
+  --frt-border-soft: #e5e7eb;
+  --frt-text-strong: #1a202c;
+  --frt-text-mid: #6b7280;
+  --frt-text-dim: #9ca3af;
+  --frt-text-faint: #d1d5db;
+  --frt-accent: #2DD6FF;
+  --frt-on-accent: #ffffff;
+  --cs-danger: #FF8C70;
+  --cs-success: #1FB6E0;
+  --cs-warning: #F59E0B;
+}
+
+[class*="fr-theme-dark"] {
+  --frt-bg: #0F172A;
+  --frt-bg-soft: #1E293B;
+  --frt-bg-dim: #334155;
+  --frt-border: #475569;
+  --frt-border-soft: #64748b;
+  --frt-text-strong: #f1f5f9;
+  --frt-text-mid: #cbd5e1;
+  --frt-text-dim: #94a3b8;
+  --frt-text-faint: #64748b;
+}
+
+.fr-field,
+.fr-longfield {
+  padding: 10px 12px;
+  background: var(--frt-bg);
+  border: 1px solid var(--frt-border);
+  color: var(--frt-text-strong);
+  border-radius: 7px;
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.fr-field:focus,
+.fr-longfield:focus {
+  outline: none;
+  border-color: var(--frt-accent);
+  box-shadow: 0 0 0 3px rgba(45, 214, 255, 0.1);
+}
+
+.fr-field::placeholder,
+.fr-longfield::placeholder {
+  color: var(--frt-text-dim);
+}
+
+.fr-uploadhint {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 14px 18px;
+  background: linear-gradient(90deg, rgba(45, 214, 255, 0.1), transparent 70%);
+  border-bottom: 1px solid var(--frt-border-soft);
+  position: relative;
+  border-radius: 8px;
+}
+
+.fr-uploadhint-num {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--frt-accent);
+  color: var(--frt-on-accent);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 18px;
+}
+
+.fr-uploadhint-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.fr-uploadhint-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--frt-text-strong);
+  margin-bottom: 6px;
+}
+
+.fr-uploadhint-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--frt-text-mid);
+}
