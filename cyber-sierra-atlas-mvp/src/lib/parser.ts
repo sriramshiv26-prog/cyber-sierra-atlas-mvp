@@ -5,6 +5,10 @@ import mammoth from 'mammoth';
 import { parseFindingsWithLLM } from './llm';
 import { Finding } from './schema';
 import { extractFromPDFWithFallback } from './pdf-extraction';
+import { extractFindingsFromFile, ExtractionResult } from './report-extractors';
+import { detectReportTypeFromBoth } from './report-detector';
+import { standardizeExtractedFindings, standardizeManualFinding } from './audit-standardizer';
+import { ManualFindingInput } from './audit-types';
 
 /**
  * PDF.js worker configuration.
@@ -107,7 +111,7 @@ async function extractTextFromExcel(file: File): Promise<string> {
   workbook.SheetNames.forEach(sheetName => {
     const worksheet = workbook.Sheets[sheetName];
     const json = XLSX.utils.sheet_to_json(worksheet);
-    
+
     allSheetsText += `\nSheet: ${sheetName}\n`;
     allSheetsText += json.map((row: any) => {
       return Object.entries(row)
@@ -117,4 +121,82 @@ async function extractTextFromExcel(file: File): Promise<string> {
   });
 
   return allSheetsText;
+}
+
+/**
+ * Phase 4: Extract audit findings from file with automatic type detection and standardization
+ * Supports: PDF, Excel, JSON, DOCX with confidence scoring and audit trail
+ */
+export async function extractAuditFindings(file: File): Promise<Finding[]> {
+  const arrayBuffer = await file.arrayBuffer();
+  const fileBytes = new Uint8Array(arrayBuffer);
+  const ext = file.name.split('.').pop()?.toLowerCase();
+
+  try {
+    // Get raw text for report type detection
+    const rawText = await extractTextForDetection(file);
+
+    // Detect report type from filename + content
+    const reportType = detectReportTypeFromBoth(rawText, file.name);
+    if (!reportType) {
+      throw new Error(`Could not detect audit report type for ${file.name}`);
+    }
+
+    console.log(`[Audit Parser] Detected report type: ${reportType} for ${file.name}`);
+
+    // Extract findings using format-specific extractor
+    const extractionResult = await extractFindingsFromFile(fileBytes, file.name, file.type);
+
+    console.log(`[Audit Parser] Extracted ${extractionResult.findings.length} findings with confidence ${extractionResult.metadata.extractedAt}`);
+
+    // Standardize to Finding schema
+    const standardizedFindings = standardizeExtractedFindings(
+      extractionResult.findings,
+      extractionResult.metadata,
+      reportType
+    );
+
+    return standardizedFindings;
+  } catch (error) {
+    console.error(`[Audit Parser Error] Failed to extract audit findings from ${file.name}:`, error);
+    throw error;
+  }
+}
+
+/**
+ * Convert manual finding entry to standardized Finding schema
+ */
+export function parseManualFinding(input: ManualFindingInput): Finding {
+  try {
+    return standardizeManualFinding(input);
+  } catch (error) {
+    console.error('[Manual Finding Parser Error]', error);
+    throw error;
+  }
+}
+
+/**
+ * Helper to extract raw text for report type detection
+ */
+async function extractTextForDetection(file: File): Promise<string> {
+  const ext = file.name.split('.').pop()?.toLowerCase();
+
+  try {
+    if (ext === 'pdf') {
+      return await extractTextFromPDF(file);
+    } else if (ext === 'csv') {
+      return await extractTextFromCSV(file);
+    } else if (ext === 'json') {
+      return await extractTextFromJSON(file);
+    } else if (ext === 'docx') {
+      return await extractTextFromWord(file);
+    } else if (ext === 'xlsx' || ext === 'xls') {
+      return await extractTextFromExcel(file);
+    } else {
+      return await file.text();
+    }
+  } catch (error) {
+    console.warn(`[Parser] Could not extract text from ${file.name} for detection:`, error);
+    return file.name; // Fallback to filename for detection
+  }
 }
