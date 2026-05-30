@@ -16,7 +16,11 @@ export interface Finding {
 
   // Audit report type (Phase 4)
   audit_report_type?: 'non-conformity' | 'pen-test' | 'third-party-assessment' | 'external-audit' | 'risk-assessment' | 'vulnerability-scan' | 'internal-audit' | 'regulatory' | 'tabletop-ir' | 'incident' | 'rcsa' | 'operational-issue';
-  
+
+  // Phase 3: Framework compliance tracking
+  framework_controls?: string[]; // e.g., ['ISO27001_A.5.1', 'NIST_AC-2', 'CIS_5.1']
+  remediation_status?: 'open' | 'in_progress' | 'scheduled' | 'closed'; // Phase 3: workflow status
+
   // Asset mapping
   asset_id: string;
   asset_name: string;
