@@ -14,7 +14,8 @@ type StoreAction =
   | { type: 'CONFIRM_UNIQUE'; payload: string }
   | { type: 'UNMARK_DUPLICATE'; payload: string }
   | { type: 'DETECT_DUPLICATES'; payload?: void }
-  | { type: 'UPDATE_REMEDIATION_STATUS'; findingId: string; status: 'open' | 'in_progress' | 'scheduled' | 'closed' };
+  | { type: 'UPDATE_REMEDIATION_STATUS'; findingId: string; status: 'open' | 'in_progress' | 'scheduled' | 'closed' }
+  | { type: 'UPDATE_REMEDIATION'; payload: { id: string; status?: string; due_date?: string; owner?: string } };
 
 const StoreContext = createContext<{
   store: Store;
@@ -141,6 +142,21 @@ export function storeReducer(state: Store, action: StoreAction): Store {
       return {
         ...state,
         findings: newFindings,
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'UPDATE_REMEDIATION': {
+      const finding = state.findings.find(f => f.id === action.payload.id);
+      if (!finding) return state;
+      const updated = {
+        ...finding,
+        remediation_status: action.payload.status !== undefined ? action.payload.status : finding.remediation_status,
+        due_date: action.payload.due_date !== undefined ? action.payload.due_date : finding.due_date,
+        owner: action.payload.owner !== undefined ? action.payload.owner : finding.owner,
+      };
+      return {
+        ...state,
+        findings: state.findings.map(f => f.id === action.payload.id ? updated : f),
         lastSaved: new Date().toISOString(),
       };
     }
