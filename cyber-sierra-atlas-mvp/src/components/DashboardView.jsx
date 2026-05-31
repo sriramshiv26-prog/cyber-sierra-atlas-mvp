@@ -10,6 +10,7 @@ import { exportFindingsAsCSV, exportStoreAsJSON, exportFindingsAsMarkdown, downl
 import { buildSeverityAgeHeatMap, buildAssetRiskProfiles, SEVERITY_LEVELS, AGE_BRACKETS } from '../lib/chart-utils';
 import { getOverdueFindings } from '../lib/overdue';
 import { OverdueDetailModal } from './OverdueDetailModal';
+import { RemediationSankey } from './RemediationSankey';
 
 /**
  * Enterprise Dashboard Component
@@ -43,6 +44,7 @@ export function DashboardView() {
   const { store } = useStore();
   const { findings } = store;
   const [showOverdueModal, setShowOverdueModal] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   // Export handlers
   const handleExportCSV = () => {
@@ -188,6 +190,34 @@ export function DashboardView() {
           )}
         </div>
       </div>
+
+      {/* Tab Navigation */}
+      <div className="flex gap-2 border-b border-slate-200 dark:border-slate-700">
+        <button
+          onClick={() => setActiveTab('overview')}
+          className={`px-4 py-2 font-medium text-sm transition-colors ${
+            activeTab === 'overview'
+              ? 'text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          Overview
+        </button>
+        <button
+          onClick={() => setActiveTab('sankey')}
+          className={`px-4 py-2 font-medium text-sm transition-colors ${
+            activeTab === 'sankey'
+              ? 'text-slate-900 dark:text-white border-b-2 border-slate-900 dark:border-white'
+              : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+          }`}
+        >
+          Remediation Flow
+        </button>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'overview' && (
+      <>
 
       {/* KPI Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
@@ -410,6 +440,13 @@ export function DashboardView() {
             <p className="mt-1">Shows findings by severity level and age in days from due date</p>
           </div>
         </div>
+      )}
+      </>
+      )}
+
+      {/* Sankey Tab */}
+      {activeTab === 'sankey' && (
+        <RemediationSankey findings={findings} />
       )}
 
       {/* Overdue Detail Modal */}
