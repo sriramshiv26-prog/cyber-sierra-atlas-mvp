@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Store, Finding, Asset } from '../lib/schema';
 import { mergeDuplicates, confirmUnique, unmarkDuplicate, detectDuplicates } from '../lib/dedup-rules';
+import { addAuditEntry } from '../lib/audit-log';
 
 type StoreAction =
   | { type: 'ADD_FINDINGS'; payload: Finding[] }
@@ -31,24 +32,90 @@ const initialStore: Store = {
 
 export function storeReducer(state: Store, action: StoreAction): Store {
   switch (action.type) {
-    case 'ADD_FINDINGS':
-      return {
+    case 'ADD_FINDINGS': {
+      const newState = {
         ...state,
         findings: [...state.findings, ...action.payload],
         lastSaved: new Date().toISOString(),
       };
-    case 'UPDATE_FINDING':
-      return {
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'ADD_FINDINGS',
+          user: 'system', // TODO: Replace with actual user context
+          findingIds: action.payload.map(f => f.id),
+          reason: 'Bulk import of findings',
+          metadata: {
+            count: action.payload.length,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to log ADD_FINDINGS to audit trail:', error);
+      }
+
+      return newState;
+    }
+    case 'UPDATE_FINDING': {
+      const oldFinding = state.findings.find(f => f.id === action.payload.id);
+      const newState = {
         ...state,
         findings: state.findings.map(f => f.id === action.payload.id ? action.payload : f),
         lastSaved: new Date().toISOString(),
       };
-    case 'DELETE_FINDING':
-      return {
+
+      // Log to audit trail with before/after comparison
+      try {
+        const changes: Record<string, { before: unknown; after: unknown }> = {};
+
+        if (oldFinding) {
+          // Compare key fields
+          const fieldsToTrack = ['severity', 'status', 'remediation_status', 'due_date', 'owner', 'remediation_suggested', 'root_cause'];
+          fieldsToTrack.forEach(field => {
+            const before = (oldFinding as any)[field];
+            const after = (action.payload as any)[field];
+            if (before !== after) {
+              changes[field] = { before, after };
+            }
+          });
+        }
+
+        addAuditEntry({
+          action: 'UPDATE_FINDING',
+          user: 'system',
+          findingId: action.payload.id,
+          changes: Object.keys(changes).length > 0 ? changes : undefined,
+          metadata: {
+            changedFields: Object.keys(changes),
+          },
+        });
+      } catch (error) {
+        console.error('Failed to log UPDATE_FINDING to audit trail:', error);
+      }
+
+      return newState;
+    }
+    case 'DELETE_FINDING': {
+      const newState = {
         ...state,
         findings: state.findings.filter(f => f.id !== action.payload),
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'DELETE_FINDING',
+          user: 'system',
+          findingId: action.payload,
+          reason: 'Finding deleted by user',
+        });
+      } catch (error) {
+        console.error('Failed to log DELETE_FINDING to audit trail:', error);
+      }
+
+      return newState;
+    }
     case 'ADD_ASSET':
       return {
         ...state,
@@ -75,31 +142,78 @@ export function storeReducer(state: Store, action: StoreAction): Store {
         action.payload.masterId,
         action.payload.duplicateIds
       );
-      return {
+      const newState = {
         ...state,
         findings: updatedFindings,
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'MERGE_DUPLICATES',
+          user: 'system',
+          findingIds: [action.payload.masterId, ...action.payload.duplicateIds],
+          reason: 'Merged duplicate findings into master',
+          metadata: {
+            masterId: action.payload.masterId,
+            duplicateIds: action.payload.duplicateIds,
+            count: action.payload.duplicateIds.length,
+          },
+        });
+      } catch (error) {
+        console.error('Failed to log MERGE_DUPLICATES to audit trail:', error);
+      }
+
+      return newState;
     }
     case 'CONFIRM_UNIQUE': {
       const targetFinding = state.findings.find(f => f.id === action.payload);
       if (!targetFinding) return state;
       const updatedFinding = confirmUnique(targetFinding);
-      return {
+      const newState = {
         ...state,
         findings: state.findings.map(f => f.id === action.payload ? updatedFinding : f),
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'CONFIRM_UNIQUE',
+          user: 'system',
+          findingId: action.payload,
+          reason: 'Finding confirmed as unique (not a duplicate)',
+        });
+      } catch (error) {
+        console.error('Failed to log CONFIRM_UNIQUE to audit trail:', error);
+      }
+
+      return newState;
     }
     case 'UNMARK_DUPLICATE': {
       const targetFinding = state.findings.find(f => f.id === action.payload);
       if (!targetFinding) return state;
       const updatedFinding = unmarkDuplicate(targetFinding);
-      return {
+      const newState = {
         ...state,
         findings: state.findings.map(f => f.id === action.payload ? updatedFinding : f),
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'UNMARK_DUPLICATE',
+          user: 'system',
+          findingId: action.payload,
+          reason: 'Removed duplicate marking from finding',
+        });
+      } catch (error) {
+        console.error('Failed to log UNMARK_DUPLICATE to audit trail:', error);
+      }
+
+      return newState;
     }
     case 'DETECT_DUPLICATES': {
       const duplicateGroups = detectDuplicates(state.findings);
@@ -134,16 +248,37 @@ export function storeReducer(state: Store, action: StoreAction): Store {
       };
     }
     case 'UPDATE_REMEDIATION_STATUS': {
+      const oldFinding = state.findings.find(f => f.id === action.findingId);
       const newFindings = state.findings.map(f =>
         f.id === action.findingId
           ? { ...f, remediation_status: action.status }
           : f
       );
-      return {
+      const newState = {
         ...state,
         findings: newFindings,
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail
+      try {
+        addAuditEntry({
+          action: 'UPDATE_REMEDIATION_STATUS',
+          user: 'system',
+          findingId: action.findingId,
+          changes: oldFinding ? {
+            remediation_status: {
+              before: oldFinding.remediation_status,
+              after: action.status,
+            },
+          } : undefined,
+          reason: `Remediation status updated to ${action.status}`,
+        });
+      } catch (error) {
+        console.error('Failed to log UPDATE_REMEDIATION_STATUS to audit trail:', error);
+      }
+
+      return newState;
     }
     case 'UPDATE_REMEDIATION': {
       const finding = state.findings.find(f => f.id === action.payload.id);
@@ -154,11 +289,51 @@ export function storeReducer(state: Store, action: StoreAction): Store {
         due_date: action.payload.due_date !== undefined ? action.payload.due_date : finding.due_date,
         owner: action.payload.owner !== undefined ? action.payload.owner : finding.owner,
       };
-      return {
+      const newState = {
         ...state,
         findings: state.findings.map(f => f.id === action.payload.id ? updated : f),
         lastSaved: new Date().toISOString(),
       };
+
+      // Log to audit trail with before/after
+      try {
+        const changes: Record<string, { before: unknown; after: unknown }> = {};
+
+        if (action.payload.status !== undefined && action.payload.status !== finding.remediation_status) {
+          changes['remediation_status'] = {
+            before: finding.remediation_status,
+            after: action.payload.status,
+          };
+        }
+
+        if (action.payload.due_date !== undefined && action.payload.due_date !== finding.due_date) {
+          changes['due_date'] = {
+            before: finding.due_date,
+            after: action.payload.due_date,
+          };
+        }
+
+        if (action.payload.owner !== undefined && action.payload.owner !== finding.owner) {
+          changes['owner'] = {
+            before: finding.owner,
+            after: action.payload.owner,
+          };
+        }
+
+        addAuditEntry({
+          action: 'UPDATE_REMEDIATION',
+          user: 'system',
+          findingId: action.payload.id,
+          changes: Object.keys(changes).length > 0 ? changes : undefined,
+          metadata: {
+            changedFields: Object.keys(changes),
+          },
+        });
+      } catch (error) {
+        console.error('Failed to log UPDATE_REMEDIATION to audit trail:', error);
+      }
+
+      return newState;
     }
     default:
       return state;
