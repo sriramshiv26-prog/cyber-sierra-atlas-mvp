@@ -9,6 +9,7 @@ import { extractFindingsFromFile, ExtractionResult } from './report-extractors';
 import { detectReportTypeFromBoth } from './report-detector';
 import { standardizeExtractedFindings, standardizeManualFinding } from './audit-standardizer';
 import { ManualFindingInput } from './audit-types';
+import { shouldPreprocessFile, convertToMarkdown } from './markitdown-converter';
 
 /**
  * PDF.js worker configuration.
@@ -126,6 +127,7 @@ async function extractTextFromExcel(file: File): Promise<string> {
 /**
  * Phase 4: Extract audit findings from file with automatic type detection and standardization
  * Supports: PDF, Excel, JSON, DOCX with confidence scoring and audit trail
+ * Phase 5: Includes preprocessing for multi-format files (JSON, CSV, HTML → Markdown)
  */
 export async function extractAuditFindings(file: File): Promise<Finding[]> {
   const arrayBuffer = await file.arrayBuffer();
@@ -134,7 +136,10 @@ export async function extractAuditFindings(file: File): Promise<Finding[]> {
 
   try {
     // Get raw text for report type detection
-    const rawText = await extractTextForDetection(file);
+    let rawText = await extractTextForDetection(file);
+
+    // Preprocess file if needed (convert formats to Markdown)
+    rawText = await preprocessFile(file.name, rawText);
 
     // Detect report type from filename + content
     const reportType = detectReportTypeFromBoth(rawText, file.name);
@@ -173,6 +178,27 @@ export function parseManualFinding(input: ManualFindingInput): Finding {
     console.error('[Manual Finding Parser Error]', error);
     throw error;
   }
+}
+
+/**
+ * Preprocess file content if needed (convert formats to Markdown)
+ * @param filename The filename
+ * @param content The raw file content
+ * @returns Preprocessed content (converted to Markdown if needed)
+ */
+export async function preprocessFile(filename: string, content: string): Promise<string> {
+  if (shouldPreprocessFile(filename)) {
+    console.log(`[Preprocessor] Converting ${filename} to Markdown format`);
+    try {
+      const converted = convertToMarkdown(content, filename);
+      console.log(`[Preprocessor] Successfully converted ${filename}`);
+      return converted;
+    } catch (error) {
+      console.warn(`[Preprocessor] Conversion failed for ${filename}, using original content:`, error);
+      return content;
+    }
+  }
+  return content;
 }
 
 /**

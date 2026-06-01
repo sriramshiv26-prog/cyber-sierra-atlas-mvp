@@ -4,6 +4,7 @@ import { Finding } from '../lib/schema';
 import { extractAuditFindings, parseManualFinding } from '../lib/parser';
 import { validateManualEntry, ValidationResult } from '../lib/audit-validation';
 import { ManualFindingInput } from '../lib/audit-types';
+import { shouldPreprocessFile } from '../lib/markitdown-converter';
 
 interface AuditUploadModalProps {
   isOpen: boolean;
@@ -322,8 +323,14 @@ function UploadTab({ onParsedFindings, onClose, setLoadingState, setError, loadi
           <p style={{
             fontSize: '13px',
             color: 'var(--frt-text-mid)',
-            margin: 0
+            margin: '0 0 8px 0'
           }}>This may take a moment</p>
+          <p style={{
+            fontSize: '12px',
+            color: 'var(--frt-text-dim)',
+            margin: 0,
+            fontStyle: 'italic'
+          }}>Multi-format preprocessing enabled</p>
         </div>
       )}
 
