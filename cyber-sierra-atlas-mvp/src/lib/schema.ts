@@ -129,6 +129,7 @@ export interface Store {
   findings: Finding[];
   assets: Asset[];
   controls: Control[];
+  capas?: import('../types/capa').CapaWorkflow[];
   lastSaved: string;
 }
 

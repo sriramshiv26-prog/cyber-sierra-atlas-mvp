@@ -2,6 +2,7 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { Store, Finding, Asset } from '../lib/schema';
 import { mergeDuplicates, confirmUnique, unmarkDuplicate, detectDuplicates } from '../lib/dedup-rules';
 import { addAuditEntry } from '../lib/audit-log';
+import { CapaWorkflow, ApprovalRole, EvidenceItem } from '../types/capa';
 
 type StoreAction =
   | { type: 'ADD_FINDINGS'; payload: Finding[] }
@@ -16,7 +17,13 @@ type StoreAction =
   | { type: 'UNMARK_DUPLICATE'; payload: string }
   | { type: 'DETECT_DUPLICATES'; payload?: void }
   | { type: 'UPDATE_REMEDIATION_STATUS'; findingId: string; status: 'open' | 'in_progress' | 'scheduled' | 'closed' }
-  | { type: 'UPDATE_REMEDIATION'; payload: { id: string; status?: string; due_date?: string; owner?: string } };
+  | { type: 'UPDATE_REMEDIATION'; payload: { id: string; status?: string; due_date?: string; owner?: string } }
+  | { type: 'CREATE_CAPA'; payload: CapaWorkflow }
+  | { type: 'UPDATE_CAPA'; payload: { id: string; updates: Partial<CapaWorkflow> } }
+  | { type: 'CLOSE_CAPA'; payload: { id: string; closed_at: string } }
+  | { type: 'APPROVE_CAPA'; payload: { id: string; role: ApprovalRole; user: string } }
+  | { type: 'UNLINK_CAPA'; payload: { capa_id: string } }
+  | { type: 'ADD_EVIDENCE'; payload: { capa_id: string; evidence: EvidenceItem } };
 
 const StoreContext = createContext<{
   store: Store;
@@ -334,6 +341,124 @@ export function storeReducer(state: Store, action: StoreAction): Store {
       }
 
       return newState;
+    }
+    case 'CREATE_CAPA': {
+      const newCapa = {
+        ...action.payload,
+        audit_trail: [{
+          action: 'created',
+          user: action.payload.created_by,
+          timestamp: new Date().toISOString(),
+          details: { status: 'draft' },
+          immutable: true as const,
+        }],
+      };
+      return {
+        ...state,
+        capas: [...(state.capas || []), newCapa],
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'UPDATE_CAPA': {
+      return {
+        ...state,
+        capas: (state.capas || []).map(c =>
+          c.id === action.payload.id
+            ? {
+                ...c,
+                ...action.payload.updates,
+                updated_at: new Date().toISOString(),
+                audit_trail: [...c.audit_trail, {
+                  action: 'updated',
+                  user: 'system',
+                  timestamp: new Date().toISOString(),
+                  details: action.payload.updates,
+                  immutable: true as const,
+                }],
+              }
+            : c
+        ),
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'CLOSE_CAPA': {
+      return {
+        ...state,
+        capas: (state.capas || []).map(c =>
+          c.id === action.payload.id
+            ? {
+                ...c,
+                status: 'closed' as const,
+                updated_at: action.payload.closed_at,
+                audit_trail: [...c.audit_trail, {
+                  action: 'closed',
+                  user: 'system',
+                  timestamp: action.payload.closed_at,
+                  details: { previous_status: c.status },
+                  immutable: true as const,
+                }],
+              }
+            : c
+        ),
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'APPROVE_CAPA': {
+      return {
+        ...state,
+        capas: (state.capas || []).map(c =>
+          c.id === action.payload.id
+            ? {
+                ...c,
+                approvals: c.approvals.map(a =>
+                  a.role === action.payload.role
+                    ? { ...a, approved: true, timestamp: new Date().toISOString(), user: action.payload.user }
+                    : a
+                ),
+                audit_trail: [...c.audit_trail, {
+                  action: 'approved',
+                  user: action.payload.user,
+                  timestamp: new Date().toISOString(),
+                  details: { role: action.payload.role },
+                  immutable: true as const,
+                }],
+              }
+            : c
+        ),
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'UNLINK_CAPA': {
+      return {
+        ...state,
+        findings: (state.findings || []).map(f =>
+          (f as any).capa_id === action.payload.capa_id
+            ? { ...f, capa_id: undefined }
+            : f
+        ),
+        lastSaved: new Date().toISOString(),
+      };
+    }
+    case 'ADD_EVIDENCE': {
+      return {
+        ...state,
+        capas: (state.capas || []).map(c =>
+          c.id === action.payload.capa_id
+            ? {
+                ...c,
+                evidence_checklist: [...c.evidence_checklist, action.payload.evidence],
+                audit_trail: [...c.audit_trail, {
+                  action: 'evidence_added',
+                  user: 'system',
+                  timestamp: new Date().toISOString(),
+                  details: { item: action.payload.evidence.item },
+                  immutable: true as const,
+                }],
+              }
+            : c
+        ),
+        lastSaved: new Date().toISOString(),
+      };
     }
     default:
       return state;
