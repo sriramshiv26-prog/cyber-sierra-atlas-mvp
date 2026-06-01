@@ -66,6 +66,9 @@ export interface Finding {
   remediation_last_modified_by?: string;
   remediation_last_modified_at?: string;
 
+  // CAPA linking (Task 1)
+  capa_id?: string; // Link to CapaWorkflow (undefined if not in CAPA)
+
   // Relationships
   related_findings: string[];
   deduped_with?: string;
