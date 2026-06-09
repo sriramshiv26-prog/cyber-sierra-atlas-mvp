@@ -4,8 +4,9 @@ import { ViewToggle } from './ViewToggle';
 import { AnalystView } from './AnalystView';
 import { ExecutiveView } from './ExecutiveView';
 import { DrillDownPanel } from './DrillDownPanel';
-import { getDashboardMetrics, getDashboardTrends, getDrillDown } from '../../api/dashboard';
-import type { DashboardMetrics, Trends, FilterCriteria } from '../../types/dashboard';
+import { ComparisonView } from './ComparisonView';
+import { getDashboardMetrics, getDashboardTrends, getDrillDown, getComparison } from '../../api/dashboard';
+import type { DashboardMetrics, Trends, FilterCriteria, PeriodComparison } from '../../types/dashboard';
 
 /**
  * Main Dashboard Container Component
@@ -32,6 +33,10 @@ export const Dashboard: React.FC = () => {
   const [drillDownResults, setDrillDownResults] = useState<DrillDownResult[]>([]);
   const [drillDownFilter, setDrillDownFilter] = useState<FilterCriteria>({});
   const [drillDownLoading, setDrillDownLoading] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
+  const [comparisonPeriod, setComparisonPeriod] = useState<'week' | 'month'>('week');
+  const [comparison, setComparison] = useState<PeriodComparison | null>(null);
+  const [comparisonLoading, setComparisonLoading] = useState(false);
 
   /**
    * Fetch metrics and trends from API
@@ -126,6 +131,24 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  /**
+   * Fetch period comparison data
+   */
+  const handleFetchComparison = async (period: 'week' | 'month') => {
+    try {
+      setComparisonLoading(true);
+      const result = await getComparison(period);
+      setComparison(result);
+      setComparisonPeriod(period);
+      setShowComparison(true);
+    } catch (err) {
+      console.error('Comparison fetch error:', err);
+      setError('Failed to load comparison data');
+    } finally {
+      setComparisonLoading(false);
+    }
+  };
+
   // Show error state
   if (error && !metrics) {
     return (
@@ -182,6 +205,9 @@ export const Dashboard: React.FC = () => {
           trends={trends}
           isLoading={isLoading}
           onDrillDown={handleDrillDown}
+          comparison={comparison}
+          comparisonLoading={comparisonLoading}
+          onFetchComparison={handleFetchComparison}
         />
       ) : (
         <ExecutiveView metrics={metrics} trends={trends} />
