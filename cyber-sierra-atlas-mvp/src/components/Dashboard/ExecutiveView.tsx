@@ -15,6 +15,9 @@ interface ExecutiveViewProps {
  * Minimal, executive-focused presentation
  */
 export const ExecutiveView: React.FC<ExecutiveViewProps> = ({ metrics, trends }) => {
+  // Detect dark mode from HTML element class
+  const isDarkMode = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+
   // Calculate risk score based on metrics
   const riskScore = React.useMemo(() => {
     const totalCritical = metrics.severity.critical;
@@ -116,10 +119,10 @@ export const ExecutiveView: React.FC<ExecutiveViewProps> = ({ metrics, trends })
                 />
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1f2937',
-                    border: '1px solid #374151',
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
                     borderRadius: '0.5rem',
-                    color: '#f3f4f6',
+                    color: isDarkMode ? '#f3f4f6' : '#111827',
                   }}
                   labelFormatter={(date) => {
                     const d = new Date(date as string);

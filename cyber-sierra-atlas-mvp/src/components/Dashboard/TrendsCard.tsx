@@ -13,6 +13,9 @@ interface TrendsCardProps {
  * Allows toggling between different time periods
  */
 export const TrendsCard: React.FC<TrendsCardProps> = ({ trends }) => {
+  // Detect dark mode from HTML element class
+  const isDarkMode = typeof window !== 'undefined' && document.documentElement.classList.contains('dark');
+
   const [period, setPeriod] = useState<'30' | '60' | '90'>('30');
   const [metric, setMetric] = useState<'openFindings' | 'mttrDays' | 'slaCompliance' | 'capaCompletePercent'>('openFindings');
 
@@ -121,10 +124,10 @@ export const TrendsCard: React.FC<TrendsCardProps> = ({ trends }) => {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1f2937',
-                border: '1px solid #374151',
+                backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                border: `1px solid ${isDarkMode ? '#374151' : '#e5e7eb'}`,
                 borderRadius: '0.5rem',
-                color: '#f3f4f6',
+                color: isDarkMode ? '#f3f4f6' : '#111827',
               }}
               labelFormatter={(date) => {
                 const d = new Date(date as string);

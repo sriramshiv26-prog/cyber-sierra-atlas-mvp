@@ -3,14 +3,24 @@ import { Header } from './Header';
 import { ViewToggle } from './ViewToggle';
 import { AnalystView } from './AnalystView';
 import { ExecutiveView } from './ExecutiveView';
-import { getDashboardMetrics, getDashboardTrends } from '../../api/dashboard';
-import type { DashboardMetrics, Trends } from '../../types/dashboard';
+import { DrillDownPanel } from './DrillDownPanel';
+import { getDashboardMetrics, getDashboardTrends, getDrillDown } from '../../api/dashboard';
+import type { DashboardMetrics, Trends, FilterCriteria } from '../../types/dashboard';
 
 /**
  * Main Dashboard Container Component
  * Manages metrics fetching, auto-refresh, and view state
  * Renders either Analyst or Executive view based on toggle
  */
+interface DrillDownResult {
+  id: string;
+  title: string;
+  severity?: string;
+  status: string;
+  createdAt: string;
+  type: 'finding' | 'capa';
+}
+
 export const Dashboard: React.FC = () => {
   const [metrics, setMetrics] = useState<DashboardMetrics | null>(null);
   const [trends, setTrends] = useState<Trends | null>(null);
@@ -18,6 +28,10 @@ export const Dashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
+  const [drillDownOpen, setDrillDownOpen] = useState(false);
+  const [drillDownResults, setDrillDownResults] = useState<DrillDownResult[]>([]);
+  const [drillDownFilter, setDrillDownFilter] = useState<FilterCriteria>({});
+  const [drillDownLoading, setDrillDownLoading] = useState(false);
 
   /**
    * Fetch metrics and trends from API
@@ -70,9 +84,46 @@ export const Dashboard: React.FC = () => {
   /**
    * Handle drill-down navigation
    */
-  const handleDrillDown = (metric: string, severity?: string) => {
-    // TODO: Navigate to drill-down view
-    console.log('Drill-down:', metric, severity);
+  const handleDrillDown = async (metric: string, severity?: string) => {
+    try {
+      setDrillDownLoading(true);
+
+      // Build filter criteria based on metric
+      const filter: FilterCriteria = {};
+      if (severity) {
+        filter.severity = [severity as any];
+      } else if (metric === 'severity') {
+        filter.severity = ['critical', 'high', 'medium', 'low'];
+      }
+
+      // Fetch drill-down results
+      const results = await getDrillDown(filter);
+      setDrillDownResults(results.results || []);
+      setDrillDownFilter(filter);
+      setDrillDownOpen(true);
+    } catch (err) {
+      console.error('Drill-down fetch error:', err);
+      setError('Failed to load drill-down results');
+    } finally {
+      setDrillDownLoading(false);
+    }
+  };
+
+  /**
+   * Handle drill-down filter updates
+   */
+  const handleDrillDownFilter = async (filter: FilterCriteria) => {
+    try {
+      setDrillDownLoading(true);
+      const results = await getDrillDown(filter);
+      setDrillDownResults(results.results || []);
+      setDrillDownFilter(filter);
+    } catch (err) {
+      console.error('Filter error:', err);
+      setError('Failed to apply filter');
+    } finally {
+      setDrillDownLoading(false);
+    }
   };
 
   // Show error state
@@ -148,6 +199,20 @@ export const Dashboard: React.FC = () => {
           </button>
         </div>
       )}
+
+      {/* Drill-Down Panel Modal */}
+      <DrillDownPanel
+        isOpen={drillDownOpen}
+        results={drillDownResults}
+        filter={drillDownFilter}
+        isLoading={drillDownLoading}
+        onClose={() => setDrillDownOpen(false)}
+        onFilter={handleDrillDownFilter}
+        onRowClick={(result) => {
+          console.log('Row clicked:', result);
+          // TODO: Navigate to detail page
+        }}
+      />
     </div>
   );
 };
