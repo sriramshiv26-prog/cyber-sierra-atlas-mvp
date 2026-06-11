@@ -29,28 +29,36 @@ export const Header: React.FC<HeaderProps> = ({ lastRefresh, onManualRefresh, is
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 px-6 py-4">
-      <div className="flex items-center justify-between">
+    <div className="bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 px-8 py-6 shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Monitoring Dashboard</h1>
-          <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Updated {formatTime(lastRefresh)}</p>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Cyber Sierra Atlas</h1>
+          <p className="text-sm text-slate-600 dark:text-slate-400 mt-2">
+            <span className="inline-flex items-center gap-2">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+              Updated {formatTime(lastRefresh)}
+            </span>
+          </p>
         </div>
         <button
           onClick={onManualRefresh}
           disabled={isLoading}
           className={`
             flex items-center gap-2
-            px-4 py-2
+            px-5 py-2.5
             rounded-lg
-            font-medium
+            font-semibold
+            text-sm
             transition-all duration-200
             focus:outline-none
             focus:ring-2
+            focus:ring-offset-2
             focus:ring-blue-500
+            dark:focus:ring-offset-slate-800
             ${
               isLoading
                 ? 'bg-slate-100 dark:bg-slate-700 text-slate-400 dark:text-slate-500 cursor-not-allowed'
-                : 'bg-blue-600 dark:bg-blue-600 text-white hover:bg-blue-700 dark:hover:bg-blue-700 cursor-pointer'
+                : 'bg-blue-600 dark:bg-blue-600 text-white hover:bg-blue-700 dark:hover:bg-blue-700 hover:shadow-lg cursor-pointer active:scale-95'
             }
           `}
           aria-label="Refresh dashboard"
@@ -59,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({ lastRefresh, onManualRefresh, is
             className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`}
             role={isLoading ? 'status' : undefined}
           />
-          Refresh
+          <span>Refresh</span>
         </button>
       </div>
     </div>

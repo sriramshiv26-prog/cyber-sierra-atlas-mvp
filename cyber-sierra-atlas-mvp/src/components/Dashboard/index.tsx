@@ -186,14 +186,17 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       {/* Header */}
       <Header lastRefresh={lastRefresh} onManualRefresh={fetchData} isLoading={isLoading} />
 
       {/* View Toggle */}
-      <div className="border-b border-slate-200 dark:border-slate-700 px-6 py-4 bg-white dark:bg-slate-800">
-        <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">View</h2>
+      <div className="border-b border-slate-200 dark:border-slate-700 px-8 py-6 bg-white dark:bg-slate-800 shadow-sm">
+        <div className="flex items-center justify-between max-w-7xl mx-auto">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-white">Risk & Findings Console</h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Real-time security metrics and compliance tracking</p>
+          </div>
           <ViewToggle current={view} onChange={setView} />
         </div>
       </div>

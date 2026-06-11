@@ -52,28 +52,32 @@ export const AnalystView: React.FC<AnalystViewProps> = ({
   }
 
   return (
-    <div className="p-6 bg-slate-50 dark:bg-slate-900">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {/* Card 1: Severity Breakdown */}
-        <SeverityCard
-          severity={metrics.severity}
-          onClick={(level) => onDrillDown('severity', level)}
-        />
+    <div className="p-8 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 min-h-screen">
+      <div className="max-w-7xl mx-auto">
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+          {/* Card 1: Severity Breakdown - Full width on mobile, 2 cols on tablet, 2 cols on desktop */}
+          <div className="lg:col-span-2">
+            <SeverityCard
+              severity={metrics.severity}
+              onClick={(level) => onDrillDown('severity', level)}
+            />
+          </div>
 
-        {/* Card 2: CAPA Completion */}
-        <CapaCard capa={metrics.capa} onClick={() => onDrillDown('capa')} />
+          {/* Card 2: CAPA Completion */}
+          <CapaCard capa={metrics.capa} onClick={() => onDrillDown('capa')} />
 
-        {/* Card 3: MTTR */}
-        <MttrCard mttr={metrics.mttr} onClick={() => onDrillDown('mttr')} />
+          {/* Card 3: MTTR */}
+          <MttrCard mttr={metrics.mttr} onClick={() => onDrillDown('mttr')} />
 
-        {/* Card 4: SLA Compliance */}
-        <SlaCard sla={metrics.sla} onClick={() => onDrillDown('sla')} />
+          {/* Card 4: SLA Compliance */}
+          <SlaCard sla={metrics.sla} onClick={() => onDrillDown('sla')} />
 
-        {/* Card 5: 30/60/90 Day Trends */}
-        <div className="lg:col-span-1 md:col-span-2">
-          <TrendsCard trends={trends} />
+          {/* Card 5: 30/60/90 Day Trends - Spans full width */}
+          <div className="lg:col-span-5">
+            <TrendsCard trends={trends} />
+          </div>
         </div>
-      </div>
 
       {/* Period Comparison Toggle */}
       <div className="mt-6 flex gap-2">

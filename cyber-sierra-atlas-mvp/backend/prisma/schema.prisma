@@ -1,0 +1,61 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  passwordHash String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sessions Session[]
+  findings Finding[]
+}
+
+model Session {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String  @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+}
+
+model Finding {
+  id        Int     @id @default(autoincrement())
+  title     String
+  description String?
+  severity  String  // critical, high, medium, low
+  status    String  // open, in_progress, resolved
+  assignedTo Int?
+  user      User?   @relation(fields: [assignedTo], references: [id], onDelete: SetNull)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  capaId    Int?
+  capa      CAPA?   @relation(fields: [capaId], references: [id], onDelete: SetNull)
+}
+
+model CAPA {
+  id        Int     @id @default(autoincrement())
+  title     String
+  status    String  // draft, submitted, approved, closed
+  dueDate   DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  findings  Finding[]
+}
+
+model AuditLog {
+  id        Int     @id @default(autoincrement())
+  action    String
+  resource  String
+  resourceId Int
+  changes   String? // JSON stringified
+  createdAt DateTime @default(now())
+}

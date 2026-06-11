@@ -21,20 +21,26 @@ export const CapaCard: React.FC<CapaCardProps> = ({ capa, onClick }) => {
       onClick={onClick}
       className={`
         bg-white dark:bg-slate-800
-        rounded-lg p-6
+        rounded-xl p-6
         border border-slate-200 dark:border-slate-700
         transition-all duration-200
         cursor-pointer
-        hover:shadow-lg
+        hover:shadow-lg hover:scale-105
         active:scale-95
         text-left
         w-full
+        group
       `}
-      aria-label={`CAPA completion: ${capa.percentComplete}%, ${capa.inProgress} in progress, ${capa.atRisk} at risk, ${capa.overdue} overdue`}
+      aria-label={`CAPA completion: ${capa.percentComplete}%, ${capa.inProgress} in progress, ${capa.atRisk} at risk`}
     >
-      <div className="flex items-center gap-2 mb-4">
-        <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-        <h3 className="text-slate-900 dark:text-white font-semibold">CAPA</h3>
+      <div className="flex items-center gap-3 mb-5">
+        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg group-hover:scale-110 transition-transform">
+          <CheckCircle className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+        </div>
+        <div>
+          <h3 className="text-slate-900 dark:text-white font-bold text-lg">CAPA</h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Corrective actions</p>
+        </div>
       </div>
 
       <div className="mb-4">

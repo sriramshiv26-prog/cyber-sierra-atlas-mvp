@@ -49,23 +49,26 @@ export const MetricCard: React.FC<MetricCardProps> = ({
       aria-label={`${title}: ${value} ${unit}${trend ? `, ${trend}` : ''}`}
       className={`
         bg-white dark:bg-slate-800
-        rounded-lg p-6
+        rounded-xl p-6
         border border-slate-200 dark:border-slate-700
         transition-all duration-200
-        ${onClick ? 'cursor-pointer hover:shadow-lg dark:hover:shadow-lg hover:border-blue-400 dark:hover:border-blue-400 active:scale-95' : ''}
+        shadow-sm
+        ${onClick ? 'cursor-pointer hover:shadow-lg hover:scale-105 hover:border-blue-400 dark:hover:border-blue-400 active:scale-95 group' : ''}
         ${!onClick ? 'cursor-default' : ''}
       `}
     >
-      <div className="flex flex-col gap-2">
-        <h3 className="text-slate-600 dark:text-slate-300 text-sm font-medium">{title}</h3>
+      <div className="flex flex-col gap-3">
+        <h3 className="text-slate-600 dark:text-slate-300 text-xs font-semibold uppercase tracking-wider">{title}</h3>
         <div className="flex items-baseline gap-2">
-          <span className="text-3xl font-bold text-slate-900 dark:text-white">{value}</span>
-          <span className="text-sm text-slate-500 dark:text-slate-400">{unit}</span>
+          <span className="text-4xl font-bold text-slate-900 dark:text-white group-hover:scale-110 transition-transform">{value}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">{unit}</span>
         </div>
         {trend && (
-          <div className="flex items-center gap-1">
-            <TrendIcon className={`w-4 h-4 ${trendColor}`} />
-            <span className={`text-xs font-medium ${trendColor}`}>{trend}</span>
+          <div className={`flex items-center gap-1.5 ${trend === 'improving' ? 'text-green-600 dark:text-green-400' : trend === 'degrading' ? 'text-red-600 dark:text-red-400' : 'text-slate-600 dark:text-slate-400'}`}>
+            <div className={`p-1 rounded ${trend === 'improving' ? 'bg-green-50 dark:bg-green-900/20' : trend === 'degrading' ? 'bg-red-50 dark:bg-red-900/20' : 'bg-slate-50 dark:bg-slate-700'}`}>
+              <TrendIcon className="w-4 h-4" />
+            </div>
+            <span className="text-xs font-semibold capitalize">{trend}</span>
           </div>
         )}
       </div>
