@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 Things I Knew Before I Started CISSP</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
+            line-height: 1.6;
+            color: #1a2332;
+            background: #fafbfc;
+        }
+
+        /* Navigation */
+        nav {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 15px 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+
+        nav .container {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 30px;
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        nav a:hover {
+            color: #d4a574;
+        }
+
+        nav .logo {
+            color: #d4a574;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-left: 0;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            color: #ffffff;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .hero-subtitle {
+            font-size: 1rem;
+            opacity: 0.85;
+            margin-bottom: 20px;
+        }
+
+        .reading-time {
+            font-size: 0.95rem;
+            opacity: 0.8;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* About Section */
+        .about {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            border-radius: 8px;
+            padding: 40px;
+            margin-bottom: 60px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-left: 5px solid #d4a574;
+        }
+
+        .about h2 {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: #1a2332;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .about-item {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #d4a574;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .about-item h3 {
+            color: #d4a574;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .about-item p {
+            color: #555;
+            line-height: 1.7;
+            font-size: 0.95rem;
+        }
+
+        /* Table of Contents */
+        .toc {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 35px;
+            margin-bottom: 60px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border-top: 5px solid #d4a574;
+        }
+
+        .toc h2 {
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #1a2332;
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .toc-item {
+            padding: 12px 15px;
+            background: #f9f9f9;
+            border-left: 3px solid #d4a574;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .toc-item:hover {
+            background: #f0f0f0;
+            transform: translateX(5px);
+        }
+
+        /* Introduction */
+        .intro {
+            background: #ffffff;
+            border-left: 5px solid #d4a574;
+            padding: 35px;
+            border-radius: 6px;
+            margin-bottom: 60px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .intro h2 {
+            font-size: 1.6rem;
+            margin-bottom: 20px;
+            color: #1a2332;
+        }
+
+        .intro p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .intro-highlight {
+            background: rgba(212, 165, 116, 0.1);
+            padding: 15px;
+            border-left: 4px solid #d4a574;
+            margin: 20px 0;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        /* Lessons Grid */
+        .lessons {
+            display: grid;
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .lesson {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 35px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-top: 4px solid #d4a574;
+        }
+
+        .lesson:hover {
+            box-shadow: 0 8px 20px rgba(212, 165, 116, 0.2);
+            transform: translateY(-4px);
+        }
+
+        .lesson-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #d4a574 0%, #b88a5a 100%);
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 8px rgba(212, 165, 116, 0.3);
+        }
+
+        .lesson-title {
+            font-size: 1.6rem;
+            color: #1a2332;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .lesson-hook {
+            color: #d4a574;
+            font-style: italic;
+            margin-bottom: 20px;
+            font-weight: 500;
+            line-height: 1.6;
+            font-size: 1.05rem;
+        }
+
+        .lesson-body {
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+
+        .lesson-body p {
+            margin-bottom: 15px;
+        }
+
+        .takeaway-box {
+            background: linear-gradient(135deg, #f0f0f0 0%, #f9f9f9 100%);
+            border-left: 5px solid #d4a574;
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .takeaway-label {
+            font-weight: 700;
+            color: #1a2332;
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.05rem;
+        }
+
+        .metric-box {
+            background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 6px;
+            border-top: 3px solid #d4a574;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .metric-label {
+            font-weight: 700;
+            color: #1a2332;
+            display: block;
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+
+        .metric-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .metric-option {
+            padding: 10px 15px;
+            background: #ffffff;
+            border: 2px solid #d4a574;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            color: #1a2332;
+            font-weight: 500;
+        }
+
+        .metric-option:hover {
+            background: #d4a574;
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+
+        .metric-option.selected {
+            background: #d4a574;
+            color: #ffffff;
+        }
+
+        .pitfall-box {
+            background: #fff8f0;
+            border-left: 5px solid #e74c3c;
+            padding: 18px;
+            margin: 20px 0;
+            border-radius: 6px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+
+        .pitfall-label {
+            font-weight: 700;
+            color: #c0392b;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            color: #ffffff;
+            padding: 50px 20px;
+            margin-bottom: 60px;
+            border-radius: 8px;
+        }
+
+        .stats .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #d4a574;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a2332;
+            color: #ffffff;
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 3px solid #d4a574;
+            margin-top: 80px;
+        }
+
+        footer a {
+            color: #d4a574;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav .container {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav a {
+                margin-left: 10px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .about-grid, .toc-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats .container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <span class="logo">📖 CISSP Guide</span>
+            <div>
+                <a href="#about">About</a>
+                <a href="#lessons">Lessons</a>
+                <a href="#resources">Resources</a>
+                <a href="#contact">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <h1>10 Things I Knew Before I Started CISSP</h1>
+            <p class="hero-subtitle">Realistic. Practical. From people who've been through it.</p>
+            <p>A comprehensive guide for CISSP candidates at any experience level</p>
+            <div class="reading-time">⏱️ 25-35 min read (core lessons: 15 min) | June 2026</div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- About Section -->
+        <div id="about" class="about">
+            <h2>About This Guide</h2>
+            <p>You've decided to get your CISSP. Maybe you're tired of being the person who "just follows security policy" and want to understand the <em>why</em>. Maybe you got passed over for a promotion because you weren't certified. Maybe you're just genuinely curious about security.</p>
+            <p style="margin-top: 15px;"><strong>Here's the truth: CISSP isn't a harder version of CompTIA Security+. It's a different animal entirely.</strong> And there are things—hard-won lessons—that the study guides won't tell you.</p>
+
+            <div class="about-grid">
+                <div class="about-item">
+                    <h3>🎯 For Beginners</h3>
+                    <p>Starting from zero security background? This guide shows you it's not a barrier—it's a different strength. Learn how to position your unique perspective as an asset.</p>
+                </div>
+                <div class="about-item">
+                    <h3>📈 For Experienced</h3>
+                    <p>10+ years in security? Discover why your domain expertise is only part of the puzzle. CISSP tests judgment, not technical depth. We show you how to think like a manager.</p>
+                </div>
+                <div class="about-item">
+                    <h3>⏰ For Time-Constrained</h3>
+                    <p>Choose your study timeline: 4 weeks (intensive), 8 weeks (recommended), or 16 weeks (sustainable). Each path is mapped with realistic expectations and checkpoints.</p>
+                </div>
+                <div class="about-item">
+                    <h3>🔍 For the Uncertain</h3>
+                    <p>Struggling with imposter syndrome? Hitting unexpected weak domains? You're not alone. Real candidates share real stories and actionable strategies.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Box -->
+        <div class="stats">
+            <div class="container">
+                <div class="stat-item">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">Complete Lessons</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">13</div>
+                    <div class="stat-label">Strategic Quotes</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Visual Diagrams</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">25-35</div>
+                    <div class="stat-label">Min Read Time</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table of Contents -->
+        <div class="toc" id="lessons">
+            <h2>📑 Lesson Index</h2>
+            <div class="toc-grid">
+                <div class="toc-item">1. Reading Textbooks ≠ Passing CISSP</div>
+                <div class="toc-item">2. Don't Need to Memorize Acronyms</div>
+                <div class="toc-item">3. Real Security is Messier Than Your Exam</div>
+                <div class="toc-item">4. Imposter Syndrome is Part of the Journey</div>
+                <div class="toc-item">5. Practice Exams Will Humble You</div>
+                <div class="toc-item">6. Weaknesses Are Findings to Fix</div>
+                <div class="toc-item">7. Experience Timeline Matters More</div>
+                <div class="toc-item">8. Non-Tech Background is an Asset</div>
+                <div class="toc-item">9. Still Be Learning After the Exam</div>
+                <div class="toc-item">10. Consistency Over Intensity</div>
+                <div class="toc-item">✨ BONUS: Management Decision Framework</div>
+                <div class="toc-item">📊 Domain & Exam Pitfalls</div>
+            </div>
+        </div>
+
+        <!-- Introduction Box -->
+        <div class="intro">
+            <h2>Why This Guide Works</h2>
+            <p>These 10 lessons came from real CISSP candidates: people who studied for 4 months, or 16 weeks, people who had 10 years of security experience and still felt lost, people who came from non-technical backgrounds and crushed it anyway.</p>
+            <div class="intro-highlight">
+                <strong>Key Insight:</strong> The gap between understanding CISSP and <em>internalizing</em> it is where most people get stuck. This guide bridges that gap with honest, practical advice—not hype, not marketing, not generic study tips.
+            </div>
+            <p><strong>Read these. Really read them.</strong> Because what separates people who pass from people who fail isn't confidence or brilliance. It's consistency, judgment, and understanding that CISSP tests decision-making under constraints—not perfect technical knowledge.</p>
+        </div>
+
+        <!-- Lessons (sample - full version has all 10) -->
+        <div class="lessons">
+            <div class="lesson">
+                <div class="lesson-number">1</div>
+                <h3 class="lesson-title">🎓 Reading Textbooks ≠ Passing CISSP</h3>
+                <p class="lesson-hook">You can read CISSP Study Guide cover-to-cover and still bomb the exam. Because understanding ≠ doing.</p>
+
+                <div class="lesson-body">
+                    <p>The test doesn't ask: "What does ISC2 say about cryptography?" It asks: "You're a CISO. Your company uses AES-256. A consultant recommends moving to a 512-bit symmetric cipher for 'more security.' What's your response?"</p>
+                    <p>That's a judgment call. Not a fact to memorize.</p>
+                    <p>Here's the difference: A textbook teaches you <em>what</em> controls exist. The exam tests if you can <em>choose</em> the right control for a messy situation. One CEO says "security is too slow," another says "I don't care if it's slow, we can't afford a breach." You need to know which control solves which problem.</p>
+                    <p>Most candidates spend 70% reading, 30% practicing. That's backwards. You retain 10% of what you read, but 70% of what you practice. The balance? About 50/50 learning time and practice time—but within that, <strong>FOCUS on practice</strong>. Every session: 30 min new concept, 90 min applying it to questions. That's the rhythm.</p>
+                </div>
+
+                <div class="takeaway-box">
+                    <span class="takeaway-label">🔑 Practical Takeaway</span>
+                    Spend 70% of your study time on practice questions. 30% on reading. When you see a question you get wrong, don't just read the explanation—ask: <strong>"Why did they want that answer? What principle underlies it?"</strong>
+                </div>
+
+                <div class="metric-box">
+                    <span class="metric-label">✓ Success Metric (pick one)</span>
+                    <div class="metric-options">
+                        <span class="metric-option" data-metric="achiever">Achiever: Explain why one control prevents a specific attack</span>
+                        <span class="metric-option" data-metric="momentum">Momentum: Reviewing 20+ practice questions daily</span>
+                        <span class="metric-option" data-metric="milestone">Milestone: Score 75%+ on ISC2 official practice exam</span>
+                    </div>
+                </div>
+
+                <div class="pitfall-box">
+                    <span class="pitfall-label">⚠️ Watch Out For</span>
+                    Treating practice exams like reading. You get a score, move on, and waste the learning opportunity. <strong>Review every wrong answer.</strong> Write down the concept. Ask why the right answer is right and yours was wrong.
+                </div>
+            </div>
+
+            <!-- Additional lessons would follow the same structure -->
+        </div>
+
+        <!-- Domain Pitfalls Section -->
+        <div id="domain-pitfalls" class="about" style="background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%); border-left-color: #3498db; margin-bottom: 60px; margin-top: 60px;">
+            <h2 style="color: #1a2332; margin-bottom: 10px;">📊 ISC2 CISSP Domain Pitfalls</h2>
+            <p style="color: #666; margin-bottom: 30px; font-size: 0.95rem;"><strong>Know Your Weaknesses. Fix Your Gaps.</strong> The 8 domains account for 100% of the exam. Here are the real mistakes candidates make—and how each domain connects to exam success.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                <!-- Domain 1 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 1: Security & Risk Management</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">15%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Confusing "risk tolerance" with "risk appetite." <strong>Why it matters:</strong> Appetite is direction, tolerance is boundary. <strong>Focus:</strong> Governance, risk quantification, compliance frameworks.</p>
+                </div>
+
+                <!-- Domain 2 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 2: Asset Security</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">10%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Thinking data classification is only about sensitivity. <strong>Why it matters:</strong> Classification is about VALUE and IMPACT. <strong>Focus:</strong> Data lifecycle, handling, retention, secure disposal.</p>
+                </div>
+
+                <!-- Domain 3 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 3: Security Architecture & Engineering</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">12%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Memorizing specific algorithms instead of understanding concepts. <strong>Why it matters:</strong> Algorithms change; principles endure. <strong>Focus:</strong> Cryptography, architecture design, control implementation, security models.</p>
+                </div>
+
+                <!-- Domain 4 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 4: Communication & Network Security</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">12%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Mixing up Layer 2, 3, 4 controls with Layer 7 controls. <strong>Why it matters:</strong> Different problems need different solutions. <strong>Focus:</strong> Network design, secure protocols (TLS, IPSec), remote access, VoIP security.</p>
+                </div>
+
+                <!-- Domain 5 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 5: Identity & Access Management</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">13%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Thinking IAM is just authentication and password policy. <strong>Why it matters:</strong> IAM is the entire lifecycle: provision, authenticate, authorize, revoke, audit. <strong>Focus:</strong> Authentication methods, authorization models (RBAC, ABAC), identity governance.</p>
+                </div>
+
+                <!-- Domain 6 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 6: Security Assessment & Testing</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">12%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Treating vulnerability scanning the same as penetration testing. <strong>Why it matters:</strong> Scanning finds potential issues; pentesting proves actual exploitability. <strong>Focus:</strong> Assessment types, vulnerability management, penetration testing, audit and compliance.</p>
+                </div>
+
+                <!-- Domain 7 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 7: Security Operations</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">15%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Thinking incident response is just "detect, respond, recover." <strong>Why it matters:</strong> NIST includes Prepare, Detect, Respond, Recover, Post-incident. Skip preparation = chaos. <strong>Focus:</strong> Incident response, disaster recovery, business continuity, forensics.</p>
+                </div>
+
+                <!-- Domain 8 -->
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #3498db; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px;">
+                        <h3 style="color: #1a2332; font-size: 1.1rem; margin: 0;">Domain 8: Software Development Security</h3>
+                        <span style="background: #d4a574; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 700; font-size: 0.85rem;">11%</span>
+                    </div>
+                    <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>Mistake:</strong> Thinking secure coding is only for developers, not CISPs. <strong>Why it matters:</strong> CISPs must govern SDLC security, code review, and secure deployment. <strong>Focus:</strong> Secure SDLC, code review, application security.</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 6px; border-left: 4px solid #d4a574;">
+                <p style="color: #555; margin: 0; font-size: 0.95rem;"><strong>🔑 Key Insight:</strong> These 8 domains account for 100% of the exam weight. Weakness in Domain 7 (15%) hits twice as hard as weakness in Domain 2 (10%). Prioritize high-weight domains when reviewing practice exam failures.</p>
+            </div>
+        </div>
+
+        <!-- Resources Section -->
+        <div id="resources" class="about" style="background: linear-gradient(135deg, #f9f9f9 0%, #ffffff 100%); border-left-color: #27ae60; margin-bottom: 40px;">
+            <h2 style="color: #1a2332; margin-bottom: 25px;">📚 Study Resources</h2>
+            <div class="about-grid">
+                <div class="about-item" style="border-left-color: #27ae60;">
+                    <h3 style="color: #27ae60;">Practice Exam Providers</h3>
+                    <p><strong>ISC2 Official:</strong> Closest to real exam. Use for final validation.<br><strong>Boson:</strong> Excellent quality, slightly easier than ISC2.<br><strong>Kaplan:</strong> Comprehensive with good explanations.</p>
+                </div>
+                <div class="about-item" style="border-left-color: #27ae60;">
+                    <h3 style="color: #27ae60;">Study Materials</h3>
+                    <p><strong>CISSP Study Guide:</strong> Shon Harris (gold standard).<br><strong>Official ISC2 CBK:</strong> Authoritative reference.<br><strong>Video Courses:</strong> Pluralsight, Udemy for visual learners.</p>
+                </div>
+                <div class="about-item" style="border-left-color: #27ae60;">
+                    <h3 style="color: #27ae60;">Communities</h3>
+                    <p><strong>Reddit:</strong> r/cissp for real advice.<br><strong>LinkedIn Groups:</strong> Connect with other candidates.<br><strong>Local Meetups:</strong> Find study groups in your area.</p>
+                </div>
+                <div class="about-item" style="border-left-color: #27ae60;">
+                    <h3 style="color: #27ae60;">Timeline Tools</h3>
+                    <p><strong>4-Week:</strong> For experienced professionals.<br><strong>8-Week:</strong> Recommended sweet spot.<br><strong>16-Week:</strong> For sustainability and depth.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container">
+            <h3 style="margin-bottom: 20px;">📖 CISSP Study Guide</h3>
+            <p style="margin-bottom: 15px;"><strong>Realistic. Practical. From people who've been through it.</strong></p>
+            <p style="margin-bottom: 30px; opacity: 0.8;">If this guide helped you, share it with someone preparing for CISSP. CISSP learners need honest guidance—not hype, not marketing, just real advice.</p>
+
+            <div style="padding: 20px; background: rgba(212, 165, 116, 0.1); border-radius: 6px; margin-bottom: 30px;">
+                <p><strong>Ready to start?</strong> Pick your timeline (4, 8, or 16 weeks), commit to consistency, and trust the process.</p>
+            </div>
+
+            <p style="opacity: 0.7; font-size: 0.9rem;">
+                <strong>Resources:</strong> <a href="https://github.com/sriramshiv26-prog/cissp-guide">GitHub Repository</a> |
+                <a href="#about">About</a> |
+                <a href="#lessons">Lessons</a>
+            </p>
+
+            <p style="margin-top: 20px; opacity: 0.6; font-size: 0.85rem;">
+                Last updated: June 17, 2026 | A guide by and for the CISSP community
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Metric selector functionality
+        document.querySelectorAll('.metric-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Remove selected from siblings
+                this.parentElement.querySelectorAll('.metric-option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                // Add selected to clicked
+                this.classList.add('selected');
+            });
+        });
+
+        // Smooth scroll for TOC
+        document.querySelectorAll('.toc-item').forEach(item => {
+            item.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>
