@@ -942,6 +942,66 @@
             </div>
         </div>
 
+        <!-- ADVANCED QUESTION STRATEGIES: NEGATIVES & TRICKS -->
+        <div class="about" style="background: linear-gradient(135deg, #ffe6e6 0%, #ffffff 100%); border-left-color: #e74c3c; margin-bottom: 60px; margin-top: 60px;">
+            <h2 style="color: #1a2332; margin-bottom: 20px;">⚠️ Advanced Question Strategies: Negatives, Exceptions & Trick Formats</h2>
+            <p style="color: #666; margin-bottom: 30px; font-size: 0.95rem;"><strong>CISSP loves to twist your brain.</strong> Double negatives, exceptions, and tricky phrasing are deliberate—they test if you can read carefully under pressure. Know the formats.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr; gap: 20px;">
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #e74c3c; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px; font-size: 1.1rem;">❌ DOUBLE NEGATIVE Questions</h3>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>Format:</strong> "Which of the following is NOT..." or "Which answer should NOT be implemented..."</p>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>The Trap:</strong> Your brain reads the positive. You pick the right answer to the unasked positive question.</p>
+                    <p style="color: #555; margin-bottom: 15px;"><strong>How to approach:</strong> CIRCLE the word "NOT" immediately. Rephrase mentally: "Which of these is WRONG?" or "Which does NOT belong?" This flips your mental search.</p>
+                    <p style="background: #f9f9f9; padding: 15px; border-radius: 4px; color: #333; margin: 0;"><strong>Example:</strong><br>Q: "Which of the following is NOT a control objective of COSO?"<br>A1: Reliable financial reporting ✅ (IS a COSO objective)<br>A2: Operational effectiveness ✅ (IS a COSO objective)<br>A3: Regulatory compliance ✅ (IS a COSO objective)<br>A4: Employee satisfaction ❌ (NOT a COSO objective) ← CORRECT<br><br>Without circling NOT, you pick A1 (the "best" answer). With NOT circled, you see A4 is the only one that ISN'T about COSO.</p>
+                </div>
+
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #e74c3c; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px; font-size: 1.1rem;">⛔ EXCEPT Questions</h3>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>Format:</strong> "All of the following EXCEPT..." or "Which is NOT included EXCEPT..."</p>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>The Trap:</strong> Same as NOT, but formatted differently. Your eye skips past EXCEPT.</p>
+                    <p style="color: #555; margin-bottom: 15px;"><strong>How to approach:</strong> Draw a box around "EXCEPT." You're looking for the ONE that doesn't fit with the other three.</p>
+                    <p style="background: #f9f9f9; padding: 15px; border-radius: 4px; color: #333; margin: 0;"><strong>Example:</strong><br>Q: "All of the following are phases of incident response EXCEPT:"<br>A1: Preparation ✅ (phase)<br>A2: Detection ✅ (phase)<br>A3: Patch Management ❌ (NOT a formal IR phase) ← CORRECT<br>A4: Recovery ✅ (phase)<br><br>Three are phases. One (patch management) is separate. EXCEPT points you to the outlier.</p>
+                </div>
+
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #e74c3c; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px; font-size: 1.1rem;">🔄 DOUBLE NEGATIVES (Negation within Negation)</h3>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>Format:</strong> "Which control would NOT be ineffective..." or "It is incorrect to say that encryption is NOT..."</p>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>The Trap:</strong> NOT + negative adjective = positive. Your brain short-circuits.</p>
+                    <p style="color: #555; margin-bottom: 15px;"><strong>How to approach:</strong> Parse it step-by-step. NOT + (ineffective) = (effective). Rewrite: "Which control IS effective?"</p>
+                    <p style="background: #f9f9f9; padding: 15px; border-radius: 4px; color: #333; margin: 0;"><strong>Example:</strong><br>Q: "Which encryption algorithm would NOT be an ineffective choice for HIPAA compliance?"<br>Parsed: "Which encryption would BE effective for HIPAA?"<br>A1: Rot13 (weak) ✗<br>A2: AES-256 (strong) ✅ ← CORRECT<br>A3: Plaintext (none) ✗<br>A4: DES (obsolete) ✗<br><br>The double negative flips twice: NOT + ineffective = effective. Know this or you fail.</p>
+                </div>
+
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #e74c3c; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px; font-size: 1.1rem;">❓ QUALIFIER Tricks ("Would likely," "Possible," "Could")</h3>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>Format:</strong> "An attacker could...", "It's possible that...", "Which might NOT..."</p>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>The Trap:</strong> "Could" and "possible" are hedging words. They make wrong answers seem right. (Yes, an attacker COULD break into Fort Knox, but it's not LIKELY.)</p>
+                    <p style="color: #555; margin-bottom: 15px;"><strong>How to approach:</strong> Replace "could" with "MOST LIKELY would" or "typically." Pick the most probable, not the technically possible.</p>
+                    <p style="background: #f9f9f9; padding: 15px; border-radius: 4px; color: #333; margin: 0;"><strong>Example:</strong><br>Q: "An attacker could exploit which vulnerability MOST DIRECTLY to gain admin access?"<br>A1: Unpatched 2008-era service (could, but unlikely to be running)<br>A2: Default credentials never changed (MOST LIKELY) ← CORRECT<br>A3: Theoretical zero-day in rare library (could, but not typical)<br>A4: Social engineering the CEO (could, but depends on context)<br><br>Focus on MOST LIKELY, not just what's technically possible.</p>
+                </div>
+
+                <div style="background: #ffffff; padding: 25px; border-left: 5px solid #e74c3c; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.05);">
+                    <h3 style="color: #e74c3c; margin-bottom: 15px; font-size: 1.1rem;">✋ ABSOLUTE Words ("Always," "Never," "All," "None")</h3>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>Format:</strong> "This control should ALWAYS...", "You should NEVER...", "ALL encryption is..."</p>
+                    <p style="color: #555; margin-bottom: 10px;"><strong>The Trap:</strong> Absolutes are almost always wrong. Real security has exceptions.</p>
+                    <p style="color: #555; margin-bottom: 15px;"><strong>How to approach:</strong> Be skeptical of "always" and "never." The right answer usually has nuance: "in most cases," "typically," "unless..."</p>
+                    <p style="background: #f9f9f9; padding: 15px; border-radius: 4px; color: #333; margin: 0;"><strong>Example:</strong><br>Q: "Passwords should ALWAYS be..."<br>A1: At least 20 characters (ALWAYS is too absolute) ✗<br>A2: Changed every 30 days (ALWAYS is too rigid) ✗<br>A3: Encrypted and stored securely (practically always true) ✅ ← CORRECT<br><br>A3 is still broad but more defensible than "always 20 chars"—because context matters (service accounts, privileged accounts, user accounts = different rules).</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f9f9f9; border-radius: 6px; border-left: 4px solid #e74c3c;">
+                <p style="color: #555; margin-bottom: 10px; font-size: 0.95rem;"><strong>🚨 Master Checklist for Tricky Questions:</strong></p>
+                <ul style="color: #555; margin: 0; padding-left: 20px; font-size: 0.95rem;">
+                    <li>Circle or underline: NOT, EXCEPT, NEVER, ALWAYS, COULD</li>
+                    <li>Rewrite the question in plain English (parse double negatives)</li>
+                    <li>Ask: "Is this asking for what's true or what's false?"</li>
+                    <li>Beware absolutes—look for nuanced answers</li>
+                    <li>Focus on MOST LIKELY, not just technically possible</li>
+                    <li>Trust your read-through. If a question seems backward, it probably is.</li>
+                </ul>
+            </div>
+        </div>
+
         <!-- Domain Pitfalls Section -->
         <div id="domain-pitfalls" class="about" style="background: linear-gradient(135deg, #f0f0f0 0%, #ffffff 100%); border-left-color: #3498db; margin-bottom: 60px; margin-top: 60px;">
             <h2 style="color: #1a2332; margin-bottom: 10px;">📊 ISC2 CISSP Domain Pitfalls</h2>
