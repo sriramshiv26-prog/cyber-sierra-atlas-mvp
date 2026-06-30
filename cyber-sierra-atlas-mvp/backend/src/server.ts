@@ -25,9 +25,11 @@ app.get('/health', (req: Request, res: Response) => {
 
 // Import routes
 import dashboardRouter from './routes/dashboard';
+// import analyticsRouter from './routes/analytics'; // TODO: Enable after Phase 6C complete
 
 // Register routes
 app.use('/api', dashboardRouter);
+// app.use('/api', analyticsRouter);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

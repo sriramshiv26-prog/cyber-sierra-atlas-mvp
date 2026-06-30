@@ -16,6 +16,8 @@ model User {
   updatedAt DateTime @updatedAt
   sessions Session[]
   findings Finding[]
+  quizzes Quiz[]
+  quizSessions QuizSession[]
 }
 
 model Session {
@@ -58,4 +60,62 @@ model AuditLog {
   resourceId Int
   changes   String? // JSON stringified
   createdAt DateTime @default(now())
+}
+
+// CISSP Exam Analytics Models
+model Question {
+  id        Int     @id @default(autoincrement())
+  text      String
+  domain    Int     // 1-8 for CISSP domains
+  topic     String  // e.g., "Defense-in-Depth", "Security Models"
+  subtopics String? // JSON array of subtopic strings
+  type      String  // SCENARIO, DIRECT, POLICY, TECHNICAL
+  createdAt DateTime @default(now())
+  responses Response[]
+}
+
+model Quiz {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  score     Float   // Overall percentage score
+  totalQuestions Int
+  correctAnswers Int
+  completedAt DateTime
+  createdAt DateTime @default(now())
+  responses Response[]
+  quizSessions QuizSession[]
+}
+
+model Response {
+  id        Int     @id @default(autoincrement())
+  quizId    Int
+  quiz      Quiz    @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  questionId Int
+  question  Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  selectedAnswer String
+  isCorrect Boolean
+  domain    Int     // Denormalized for fast analytics
+  topic     String  // Denormalized for fast analytics
+  type      String  // Denormalized for fast analytics
+  createdAt DateTime @default(now())
+}
+
+model QuizSession {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quizzes   Quiz[]
+  startedAt DateTime
+  endedAt   DateTime?
+  createdAt DateTime @default(now())
+}
+
+model AnalyticsCache {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  userEmail String
+  data      String  // JSON stringified analytics output
+  calculatedAt DateTime
+  updatedAt DateTime @updatedAt
 }
